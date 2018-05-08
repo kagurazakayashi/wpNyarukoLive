@@ -1,0 +1,366 @@
+#wpbody-content {
+    margin: 0px;
+    padding: 0px;
+}
+#wpNyarukoOptionTitle {
+    font-size: 20pt;
+    padding-top: 30px;
+    padding-bottom: 10px;
+    line-height: 20px;
+}
+#wpNyarukoOptionTitle span {
+    display: inline-block;
+}
+#wpNyarukoOptionTitleIcon::before {
+    color: #000 !important;
+    display: inline-block !important;
+    font-size: 20pt;
+}
+#optionbg {
+    width: 100%;
+    height: 100%;
+    width: auto;
+    height: 100%;
+    z-index: -2;
+}
+#optionbg2 {
+    background-color: rgba(255, 255, 255, 0.7);
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+.optionfull {
+    position: fixed;
+    left: 25px;
+    top: 25px;
+    user-select: none;
+}
+#optionbox h1 {
+    color: #000;
+    text-shadow: 0px 0px 5px #FFF;
+}
+#optionbox hr {
+    border: 1px dashed lightgray;
+}
+#optionbox table{
+    font-size: 14px;
+    text-shadow: 0px 0px 5px #fff;
+    color: #000;
+}
+#optionbox table input,#optionbox table textarea,#optionbox table select,#optionbox table option {
+    background-color: transparent;
+    font-family: monospace;
+    border-left: dotted gray 1px;
+    border-top: dotted gray 1px;
+    border-right: ridge gray 1px;
+    border-bottom: ridge gray 1px;
+    color: 000;
+    font-size: 14px;
+    font-family: 'Courier New', Courier, monospace;
+}
+#optionbox table input:focus,#optionbox table textarea:focus,#optionbox table select:focus,#optionbox table option:focus {
+    background-color: #FFF;
+    font-family: monospace;
+    border-left: dotted #FE99CC 2px;
+    border-top: dotted #FE99CC 2px;
+    border-right: ridge #FE99CC 2px;
+    border-bottom: ridge #FE99CC 2px;
+    color: 000;
+    font-family: 'Courier New', Courier, monospace;
+}
+#submitoption, #op_form a {
+  color: #ffffff;
+  font-size: 14px;
+  padding-top: 10px;
+  padding-right: 20px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  text-decoration: none;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0px 1px 5px #666666;
+  -moz-box-shadow: 0px 1px 5px #666666;
+  box-shadow: 0px 1px 5px #666666;
+  text-shadow: 1px 1px 3px #666666;
+  border: dotted #ffe8f2 2px;
+  background: linear-gradient(to bottom,#666666 0,gray 100%);
+  cursor:pointer;
+}
+#submitoption:hover, #submitoption:focus, #op_form a:hover, #op_form a:focus {
+    background: #e62097;
+}
+#wpfooter {
+    display: none;
+}
+#wpNyarukoInfo {
+    position:relative;
+    font-size: 14px;
+    line-height: 50px;
+    width: 200px;
+    height: 50px;
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: yellow;
+    box-shadow: 0px 0px 5px gray;
+    text-align: center;
+}
+/* [colmgr */
+#colmgr_title {
+    width: 100%;
+    text-align: center;
+}
+#colmgr_title hr {
+    width: 500px;
+}
+#colmgr_tb {
+    display: table;
+    width: 100%;
+    text-align: center;
+    font-size: 10pt;
+}
+#colmgr_tb h2 {
+    font-size: 12pt;
+    line-height: 30px;
+}
+.wpNyarukoIndexModule {
+    width: 500px;
+    text-align: center;
+    display: none;
+}
+#colmgr_tb button, #colmgr_tb select, .wpNyarukoIndexModule, .colmgr_abtn {
+    height: 30px !important;
+    background-color: #FFF !important;
+    border:1px solid skyblue !important;
+    border-radius: 5px !important;
+    user-select: none !important;
+    cursor: pointer !important;
+    color: #000 !important;
+}
+#colmgr_tb button:hover, #colmgr_tb select:hover, .wpNyarukoIndexModule:hover, .colmgr_abtn:hover {
+    color: blue !important;
+}
+.colmgr_blo_selected {
+    background-color: skyblue !important;
+}
+.colmgr_tb_sel button, #colmgr_tb select, .colmgr_abtn{
+    width: 80% !important;
+    margin-left: 10% !important;
+    margin-right: 10% !important;
+    font-size: 9pt !important;
+    text-decoration: none !important;
+}
+.colmgr_abtn {
+    color: #000 !important;
+    display: block !important;
+    line-height: 30px !important;
+    padding: 0px !important;
+    box-shadow: 0px 0px 0px !important;
+    text-shadow: 0px 0px 0px !important;
+    background: #FFF !important;
+}
+.cell {
+    display: table-cell;
+    vertical-align: top;
+}
+.colmgr_tb_sel {
+    width: 200px;
+}
+.colmgr_tb_set {
+    width: 300px;
+}
+.colmgr_tbc {
+    background-color: #EEE;
+    margin: 20px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+.colmgr_blo, .colmgr_bln {
+    background-color: lightgray;
+    margin: 5px;
+    line-height: 50px;
+    cursor: pointer;
+    user-select: none;
+}
+.racing_itembg {
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+}
+.colmgr_bln {
+    line-height: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.chcolor {
+    background-color: lightgray;
+}
+/* colmgr] */
+/* [ColorPicker */
+/* Common stuff */
+.picker-wrapper, 
+.slide-wrapper {
+    position: relative;
+    float: left;
+}
+.picker-indicator,
+.slide-indicator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+}
+.picker,
+.slide {
+    cursor: crosshair;
+    float: left;
+}
+
+/* Yashi skin */
+.flexicolorpicker {
+    float: left;
+}
+.flexicolorpicker .picker {
+    width: 200px;
+    height: 200px;
+}
+.flexicolorpicker .slide {
+    width: 30px;
+    height: 200px;
+}
+.flexicolorpicker .slide-wrapper {
+    margin-left: 10px;
+}
+.flexicolorpicker .picker-indicator {
+    width: 5px;
+    height: 5px;
+    border: 2px solid #000;
+    -moz-border-radius: 4px;
+    -o-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
+    filter: alpha(opacity=50);
+    background-color: rgba(255, 255, 255, 0.5);
+}
+.flexicolorpicker .slide-indicator {
+    width: 100%;
+    height: 2px;
+    left: -2px;
+    border: 2px solid #000;
+    background-color: transparent;
+}
+.fcp2_cinfo0 {
+    display: table;
+}
+.fcp2_cinfo1 {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+/* box */
+.wpnyarukodiglog {
+    position: fixed;
+    background-color: lightgray;
+    box-shadow: 0px 0px 10px #000;
+    border-radius: 5px;
+    padding: 12px;
+    width: 375px;
+    top: calc(50% - 127.5px);
+    left: calc(50% - 187.5px);
+    display: none;
+    user-select: none;
+}
+.wpnyarukodiglog td {
+    font-size: 10pt;
+    color: #666666;
+}
+.colorpickerwincol {
+    font-family: 'Courier New', Courier, monospace;
+}
+.wpnyarukodiglog input {
+    width: 100%;
+    height: 27px;
+    border: none;
+    background-color: #e8e8e8;
+    font-family: 'Courier New', Courier, monospace;
+    user-select: all;
+}
+.wpnyarukodiglog input:hover {
+    background-color: #FFF;
+}
+.colorpickertitle1 {
+    text-align: left;
+    cursor: move;
+}
+.wpnyarukodiglog a {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    color: #888888;
+    text-decoration-line: none;
+    text-align: center;
+    font-size: 18pt;
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 18pt;
+}
+.wpnyarukodiglog a:hover {
+    border-radius: 16px;
+    background-color: white;
+    color: #000;
+}
+.fcp2_sy1 {
+    width: 50%;
+    background-color: #FFF;
+    text-align: center;
+    display: inline-block;
+}
+.wpnyarukodiglog div.wp-menu-image:before {
+    color: #888888 !important;
+}
+.wpnyarukodiglog hr {
+    height: 1px;
+    border: none;
+    border-bottom: 1px dashed #888888;
+    margin: 0;
+    padding: 0;
+    margin-left: 10px;
+}
+.colorpickertitlehr {
+    margin-left: 22px !important;
+    margin-bottom: 10px !important;border-bottom: 1px solid gray !important;
+}
+/* ColorPicker] */
+/* [PicturePicker */
+.picturepickerpic {
+    width: 100%;
+    height: auto;
+    display: none;
+}
+.picturepickeriframe {
+    width: 100%;
+    height: 370px;
+    border: none;
+    background-color: transparent;
+    display: none;
+}
+.picturepickerbtn {
+    padding-bottom: 10px;
+    cursor: pointer;
+}
+.picturepickerbtn:hover {
+    color: blue;
+    font-weight: bold;
+}
+/* PicturePicker] */
+/* [PanelBox */
+#wpNyarukoPanelLogo {
+    display: inline-block;
+    width: 320px;
+    height: 59px;
+    background-image: url("images/wpNyaruko.gif");
+    background-size: 320px 59px;
+}
+#wpNyarukoPanelLogo:hover {
+    background-image: url("images/wpNyaruko2.gif");
+}
+/* PanelBox] */
