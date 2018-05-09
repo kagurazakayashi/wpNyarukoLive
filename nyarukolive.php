@@ -32,3 +32,16 @@ function nyarukoLiveAdminlink($links){
 	return $links;
 }
 add_filter('plugin_action_links_'.plugin_basename(__FILE__), 'nyarukoLiveAdminlink');
+function nyarukoLiveShortcode($attr, $content) {
+	$pagetype = "1";
+	if (isset($_GET["page_id"])) {
+		$pagetype = "2";
+	}
+	echo '<script>var pagetype='.$pagetype.';';
+	echo 'var pageid='.get_the_ID().';';
+	foreach($attr as $k => $v){
+		echo 'var '.$k.'="'.$v.'";';
+	}
+	echo "</script>";
+}
+add_shortcode('nyarukolive', 'nyarukoLiveShortcode');
