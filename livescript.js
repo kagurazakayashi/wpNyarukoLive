@@ -1,6 +1,7 @@
 var video = document.getElementById('nyarukolive_video');
 var videosrc = document.getElementById('nyarukolive_videosrc');
 var pauseboxi = document.getElementById('nyarukolive_playbtn');
+var pauseboxi2 = document.getElementById('nyarukolive_btnplayi');
 var player = null;
 var ready = false;
 var playing = false;
@@ -21,6 +22,7 @@ function nyarukolive_loadconfig(config) {
         return 4;
     }
     if (config["protocol"]) nyarukolive_protocol = config["protocol"];
+    if (config["pluginurl"]) nyarukolive_pluginurl = config["pluginurl"];
     if (config["timezone"]) nyarukolive_timezone = parseInt(config["timezone"]);
     return 0;
 }
@@ -76,6 +78,7 @@ function nyarukolive_playpausebtn() {
                 player.pause();
             }
             pauseboxi.style.display='block';
+            pauseboxi2.src = nyarukolive_pluginurl+"lib/baseline-play_arrow-24px.svg";
         } else {
             console.log("play");
             // pauseboxi.style.display='none';
@@ -85,6 +88,7 @@ function nyarukolive_playpausebtn() {
                 player.play();
             }
             pauseboxi.style.display='none';
+            pauseboxi2.src = nyarukolive_pluginurl+"lib/baseline-pause-24px.svg";
         }
         playing = !playing;
     // } else {
