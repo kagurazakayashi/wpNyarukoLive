@@ -8,6 +8,7 @@ var nyarukolive_playermode = 0;
 var nyarukolive_flv = "";
 var nyarukolive_hls = "";
 var nyarukolive_protocol = "";
+var nyarukolive_timezone = 10000;
 function nyarukolive_loadconfig(config) {
     if (config["mode"]) nyarukolive_playermode = parseInt(config["mode"]);
     if (config["flv"]) nyarukolive_flv = config["flv"];
@@ -20,6 +21,7 @@ function nyarukolive_loadconfig(config) {
         return 4;
     }
     if (config["protocol"]) nyarukolive_protocol = config["protocol"];
+    if (config["timezone"]) nyarukolive_timezone = parseInt(config["timezone"]);
     return 0;
 }
 function nyarukolive_selectmode(nmode) {
@@ -108,10 +110,37 @@ function chkhttps() {
     }
     return true;
 }
+function updatetime() {
+    var dt = new Date();
+    var localtimestr = (updatetimezero(dt.getHours()) + ":" + updatetimezero(dt.getMinutes()) + ":" + updatetimezero(dt.getSeconds()));
+    if (document.getElementById('nyarukolive_ltime')) document.getElementById('nyarukolive_ltime').innerText = localtimestr;
+    if (nyarukolive_timezone != 10000) {
+        var def = dt.getTimezoneOffset()/60;
+        var gmt = (dt.getHours() + def);
+        var ending = ":" + updatetimezero(dt.getMinutes()) + ":" + updatetimezero(dt.getSeconds());
+        var gmtadd = gmt + nyarukolive_timezone;
+        var wtime = updatetimecheck24((gmtadd > 24) ? (gmtadd - 24) : gmtadd,gmtadd);
+        var wtimestr = (updatetimezero(wtime) + ending);
+        if (document.getElementById('nyarukolive_wtime')) document.getElementById('nyarukolive_wtime').innerText = wtimestr;
+    }
+}
+function updatetimezero(num) {
+    return ((num <= 9) ? ("0" + num) : num);
+}
+function updatetimecheck24(hour) {
+    var newhour = (hour >= 24) ? hour - 24 : hour;
+    if (newhour < 0) { newhour += 24; }
+    else if (newhour > 24) { newhour -= 24; }
+    return newhour;
+}
 if (typeof(nyarukolive_config) == "undefined") nyarukolive_error(1);
 nyarukolive_lconf = nyarukolive_loadconfig(nyarukolive_config);
 if (nyarukolive_lconf == 0) {
-    if (chkhttps()) nyarukolive_selectmode(nyarukolive_playermode);
+    if (chkhttps()) {
+        nyarukolive_selectmode(nyarukolive_playermode);
+        updatetime();
+        setInterval("updatetime()","1000");
+    }
 } else {
     nyarukolive_error(nyarukolive_lconf);
 }

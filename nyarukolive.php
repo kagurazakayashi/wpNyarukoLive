@@ -74,13 +74,16 @@ function nyarukoLiveShortcode($attr, $content) {
 	<tbody>
 		<tr>
 		<td align="left"><marquee><?php if (isset($attr["title"])) { echo $attr["title"]; } else { echo "L&nbsp;I&nbsp;V&nbsp;E"; } ?></marquee></td>
-		<td id="nyarukolive_rtoolbox1" align="right">
+		<td id="nyarukolive_rtoolbox1" align="right"<?php 
+		$showworldtime = (isset($attr["timezone"]) && isset($attr["zonename"]));
+		if (!$showworldtime) echo ' style="width:170px;"';
+		?>>
 			<table id="nyarukolive_rtoolbox" border="0" cellpadding="0" cellspacing="0">
 			<tbody>
 				<tr>
 				<td>本地时间<br/><span id="nyarukolive_ltime" class="timev">--:--:--</span></td>
 				<?php 
-				if (isset($attr["timezone"]) && isset($attr["zonename"])) {
+				if ($showworldtime) {
 					echo '<td>'.$attr["zonename"].'<br/><span id="nyarukolive_wtime" class="timev">--:--:--</span></td>';
 				}
 				?>
