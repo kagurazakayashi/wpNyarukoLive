@@ -73,6 +73,7 @@ function nyarukoLiveShortcode($attr, $content) {
 	<table id="nyarukolive_titlebar" border="0">
 	<tbody>
 		<tr>
+		<td width="50" align="center"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-live_tv-24px.svg" /></td>
 		<td align="left"><?php if (isset($attr["title"])) { echo $attr["title"]; } else { echo "L&nbsp;I&nbsp;V&nbsp;E"; } ?></td>
 		<td id="nyarukolive_rtoolbox1" align="right"<?php 
 		$showworldtime = (isset($attr["timezone"]) && isset($attr["zonename"]));
@@ -102,6 +103,50 @@ function nyarukoLiveShortcode($attr, $content) {
 		<div id="nyarukolive_pausebox" onclick="nyarukolive_playpausebtn();">
 			<img id="nyarukolive_playbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline_play_circle_outline_white_48dp.png" alt="点击播放" />
 		</div>
+		<table id="nyarukolive_menu" width="100%">
+		<tbody>
+			<tr>
+			<td>播放器设置</td>
+			<td align="right"><a href="javascript:swmenu();" title="关闭设置菜单"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-close-24px.svg" alt="关" /></a></td>
+			</tr>
+			<tr>
+			<td>线路</td>
+			<td>
+				<select>
+					<option>默认线路</option>
+				</select>
+			</td>
+			</tr>
+			<tr>
+			<td>分辨率</td>
+			<td>
+				<select>
+					<option>原画</option>
+				</select>
+			</td>
+			</tr>
+			<tr>
+			<td>传输方式</td>
+			<td>
+				<select onchange="changemodebtn(this.value);">
+					<option id="nyarukolive_modeopt0" value=0<?php if ($liveplayermode==0) echo " selected"; ?>>Auto</option>
+					<option id="nyarukolive_modeopt1" value=1<?php if ($liveplayermode==1) echo " selected"; ?>>RTMP</option>
+					<option id="nyarukolive_modeopt2" value=2<?php if ($liveplayermode==2) echo " selected"; ?>>HLS</option>
+					<option id="nyarukolive_modeopt3" value=3<?php if ($liveplayermode==3) echo " selected"; ?>>HLS+</option>
+				</select>
+			</td>
+			</tr>
+			<tr>
+			<td>屏蔽弹幕</td>
+			<td>
+				<select>
+					<option>不屏蔽</option>
+					<option>屏蔽所有</option>
+				</select>
+			</td>
+			</tr>
+		</tbody>
+		</table>
 	</div>
 	<table id="nyarukolive_footbar" border="0">
 	<tbody>
@@ -112,18 +157,10 @@ function nyarukoLiveShortcode($attr, $content) {
 		<td width="80"><input name="textfield" class="w100" type="text" id="nyarukolive_danmunick" value="昵称" maxlength="20" disabled="disabled"></td>
 		<td><input name="textfield2" class="w100" type="text" id="nyarukolive_danmuchat" value="输入实时评论..." maxlength="100" disabled="disabled"></td>
 		<td width="70">
-			<a id="nyarukolive_btndanmusent" href="javascript:;" title="发送弹幕"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-send-24px.svg" /></a>
-			<a id="nyarukolive_btnsetting" href="javascript:;" title="播放器设置"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-settings-20px.svg" /></a>
-			<a id="nyarukolive_btnfullscreen" href="javascript:;" title="全屏幕"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-fullscreen-24px.svg" /></a>
+			<a id="nyarukolive_btndanmusent" href="javascript:;" title="发送弹幕"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-send-24px.svg" alt="发"/></a>
+			<a id="nyarukolive_btnsetting" href="javascript:swmenu();" title="播放器设置"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-settings-20px.svg" alt="设" /></a>
+			<a id="nyarukolive_btnfullscreen" href="javascript:;" title="全屏幕"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-fullscreen-24px.svg" alt="全" /></a>
 		</td>
-		<!-- <td width="70">
-			<select onchange="changemodebtn(this.value);" class="w100">
-				<option id="nyarukolive_modeopt0" value=0<?php if ($liveplayermode==0) echo " selected"; ?>>Auto</option>
-				<option id="nyarukolive_modeopt1" value=1<?php if ($liveplayermode==1) echo " selected"; ?>>RTMP</option>
-				<option id="nyarukolive_modeopt2" value=2<?php if ($liveplayermode==2) echo " selected"; ?>>HLS</option>
-				<option id="nyarukolive_modeopt3" value=3<?php if ($liveplayermode==3) echo " selected"; ?>>HLS+</option>
-			</select>
-		</td> -->
 		</tr>
 	</tbody>
 	</table>

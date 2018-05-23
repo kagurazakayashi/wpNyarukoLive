@@ -137,6 +137,14 @@ function updatetimecheck24(hour) {
     else if (newhour > 24) { newhour -= 24; }
     return newhour;
 }
+function swmenu(isopen) {
+    var nyarukolivemenu = document.getElementById("nyarukolive_menu");
+    if (nyarukolivemenu.style.display == "none") {
+        nyarukolivemenu.style.display = "block";
+    } else {
+        nyarukolivemenu.style.display = "none";
+    }
+}
 if (typeof(nyarukolive_config) == "undefined") nyarukolive_error(1);
 nyarukolive_lconf = nyarukolive_loadconfig(nyarukolive_config);
 if (nyarukolive_lconf == 0) {
