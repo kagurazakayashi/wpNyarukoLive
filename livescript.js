@@ -7,6 +7,7 @@ var playing = false;
 var nyarukolive_playermode = 0;
 var nyarukolive_flv = "";
 var nyarukolive_hls = "";
+var nyarukolive_protocol = "";
 function nyarukolive_loadconfig(config) {
     if (config["mode"]) nyarukolive_playermode = parseInt(config["mode"]);
     if (config["flv"]) nyarukolive_flv = config["flv"];
@@ -18,6 +19,7 @@ function nyarukolive_loadconfig(config) {
     } else if ((nyarukolive_playermode == 2 || nyarukolive_playermode == 3) && nyarukolive_hls == "") {
         return 4;
     }
+    if (config["protocol"]) nyarukolive_protocol = config["protocol"];
     return 0;
 }
 function nyarukolive_selectmode(nmode) {
@@ -90,10 +92,26 @@ function nyarukolive_playpausebtn() {
 function nyarukolive_error(err) {
     $("#nyarukolive").html('<div id="nyarukolive_errorinfo" class="nyarukolive_errordig"><p><b>直播播放器加载失败</b></p><p>错误代码：'+err+'</p></div>');
 }
+function chkhttps() {
+    var newurl = "";
+    var newprotocol = "";
+    if (nyarukolive_protocol == "https" && document.location.protocol != "https:") {
+        newurl = window.location.href.replace(/http:/, "https:");
+        newprotocol = "S";
+    } else if (nyarukolive_protocol == "http" && document.location.protocol != "http:") {
+        newurl = window.location.href.replace(/https:/, "http:");
+    }
+    if (newurl != "") {
+        $("#nyarukolive").html('<div id="nyarukolive_errorinfo" class="nyarukolive_warndig"><p><b>正在配置传输协议</b></p><p>正在配置 HTTP'+newprotocol+' ...</p></div>');
+        setTimeout("window.location.href='"+newurl+"';",1000);
+        return false;
+    }
+    return true;
+}
 if (typeof(nyarukolive_config) == "undefined") nyarukolive_error(1);
 nyarukolive_lconf = nyarukolive_loadconfig(nyarukolive_config);
 if (nyarukolive_lconf == 0) {
-    nyarukolive_selectmode(nyarukolive_playermode)
+    if (chkhttps()) nyarukolive_selectmode(nyarukolive_playermode);
 } else {
     nyarukolive_error(nyarukolive_lconf);
 }
