@@ -61,13 +61,12 @@ function nyarukoLiveShortcode($attr, $content) {
 	if (isset($_GET["page_id"])) {
 		$pagetype = "2";
 	}
-	echo '<script>var nyarukolive_pagetype='.$pagetype.';';
-	echo 'var nyarukolive_pageid='.get_the_ID().';';
-	echo 'var nyarukolive_playermode='.$liveplayermode.';';
+	$livepageid = get_the_ID();
+	echo '<script>var nyarukolive_config={"pagetype":'.$pagetype.',"pageid":'.$livepageid.',"mode":'.$liveplayermode;
 	foreach($attr as $k => $v){
-		echo 'var nyarukolive_'.$k.'="'.$v.'";';
+		echo ',"'.$k.'":"'.$v.'"';
 	}
-	echo "</script>";
+	echo "};</script>";
 	?>
 	<br/>
 	<div id="nyarukolive">
@@ -104,7 +103,7 @@ function nyarukoLiveShortcode($attr, $content) {
 		<source id="nyarukolive_videosrc" src="" type="application/x-mpegURL">
 		</video>
 		<div id="nyarukolive_danmubox">弹幕预留位置</div>
-		<div id="nyarukolive_pausebox" onclick="playpausebtn();">
+		<div id="nyarukolive_pausebox" onclick="nyarukolive_playpausebtn();">
 			<img id="nyarukolive_playbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline_play_circle_outline_white_48dp.png" alt="点击播放" />
 		</div>
 	</div>

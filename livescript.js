@@ -4,26 +4,42 @@ var pauseboxi = document.getElementById('nyarukolive_playbtn');
 var player = null;
 var ready = false;
 var playing = false;
-function selectmode(nmode) {
+var nyarukolive_playermode = 0;
+var nyarukolive_flv = "";
+var nyarukolive_hls = "";
+function nyarukolive_loadconfig(config) {
+    if (config["mode"]) nyarukolive_playermode = parseInt(config["mode"]);
+    if (config["flv"]) nyarukolive_flv = config["flv"];
+    if (config["hls"]) nyarukolive_hls = config["hls"];
+    if (nyarukolive_playermode == 0 && nyarukolive_flv == "" && nyarukolive_hls == "") {
+        return 2;
+    } else if (nyarukolive_playermode == 1 && nyarukolive_flv == "") {
+        return 3;
+    } else if ((nyarukolive_playermode == 2 || nyarukolive_playermode == 3) && nyarukolive_hls == "") {
+        return 4;
+    }
+    return 0;
+}
+function nyarukolive_selectmode(nmode) {
     mode = nmode;
     if (mode == 0) {
         autoselectmode();
     } else if (mode == 1) {
-        console.log("flv mode");
+        console.log("flv mode",nyarukolive_flv);
         player = flvjs.createPlayer({
             type: 'flv',
             url: nyarukolive_flv
         });
         player.attachMediaElement(video);
         player.load();
-        videoready();
+        nyarukolive_videoready();
     } else if (mode == 2) {
         console.log("hls mode");
         player = new Hls();
         player.loadSource(nyarukolive_hls);
         player.attachMedia(video);
         player.on(Hls.Events.MANIFEST_PARSED,function() {
-            videoready();
+            nyarukolive_videoready();
         });
     } else if (mode == 3) {
         mode = 3;
@@ -36,16 +52,16 @@ function selectmode(nmode) {
             errorDisplay : true,
             controlBar : true
         },function(){
-            videoready();
+            nyarukolive_videoready();
         });
     }
 }
-function videoready() {
+function nyarukolive_videoready() {
     ready = true;
     console.log("ready.");
     // playpausebtn();
 }
-function playpausebtn() {
+function nyarukolive_playpausebtn() {
     // if (ready) {
         if (playing) {
             console.log("pause");
@@ -58,7 +74,6 @@ function playpausebtn() {
             pauseboxi.style.display='block';
         } else {
             console.log("play");
-            
             // pauseboxi.style.display='none';
             if (mode == 2) {
                 video.play();
@@ -72,5 +87,14 @@ function playpausebtn() {
     //     console.log("no ready");
     // }
 }
-selectmode(nyarukolive_playermode);
+function nyarukolive_error(err) {
+    $("#nyarukolive").html('<div id="nyarukolive_errorinfo" class="nyarukolive_errordig"><p><b>直播播放器加载失败</b></p><p>错误代码：'+err+'</p></div>');
+}
+if (typeof(nyarukolive_config) == "undefined") nyarukolive_error(1);
+nyarukolive_lconf = nyarukolive_loadconfig(nyarukolive_config);
+if (nyarukolive_lconf == 0) {
+    nyarukolive_selectmode(nyarukolive_playermode)
+} else {
+    nyarukolive_error(nyarukolive_lconf);
+}
 console.log("Loading Video ...OK");

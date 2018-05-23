@@ -71,3 +71,21 @@
     top: calc(50% - 32px);
     padding: 0;
 }
+#nyarukolive_errorinfo {
+    width: 80%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-left: 10%;
+    margin-right: 10%;
+    text-align: center;
+}
+.nyarukolive_errordig {
+    color: #f8000c;
+    background-color: #feeff0;
+    border: 1px solid #fdd5d5;
+}
+.nyarukolive_warndig {
+    color: #5a4100;
+    background-color: #fdfde4;
+    border: 1px solid #fcf8c0;
+}
