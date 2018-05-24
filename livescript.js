@@ -2,6 +2,7 @@ var video = document.getElementById('nyarukolive_video');
 var videosrc = document.getElementById('nyarukolive_videosrc');
 var pauseboxi = document.getElementById('nyarukolive_playbtn');
 var pauseboxi2 = document.getElementById('nyarukolive_btnplayi');
+var nyarukolivediv = document.getElementById('nyarukolive');
 var player = null;
 var ready = false;
 var playing = false;
@@ -10,6 +11,7 @@ var nyarukolive_flv = "";
 var nyarukolive_hls = "";
 var nyarukolive_protocol = "";
 var nyarukolive_timezone = 10000;
+var isfullScreen = false;
 function nyarukolive_loadconfig(config) {
     if (config["mode"]) nyarukolive_playermode = parseInt(config["mode"]);
     if (config["flv"]) nyarukolive_flv = config["flv"];
@@ -51,12 +53,12 @@ function nyarukolive_selectmode(nmode) {
         mode = 3;
         console.log("hls+ mode");
         videosrc.src = nyarukolive_hls;
-        player = videojs('nyarukolivevideo',{
+        player = videojs('nyarukolive_video',{
             bigPlayButton : false,
-            textTrackDisplay : true,
-            posterImage: true,
+            textTrackDisplay : false,
+            posterImage: false,
             errorDisplay : true,
-            controlBar : true
+            controlBar : false
         },function(){
             nyarukolive_videoready();
         });
@@ -145,15 +147,63 @@ function swmenu(isopen) {
         nyarukolivemenu.style.display = "none";
     }
 }
-if (typeof(nyarukolive_config) == "undefined") nyarukolive_error(1);
-nyarukolive_lconf = nyarukolive_loadconfig(nyarukolive_config);
-if (nyarukolive_lconf == 0) {
-    if (chkhttps()) {
-        nyarukolive_selectmode(nyarukolive_playermode);
-        updatetime();
-        setInterval("updatetime()","1000");
+function requestFullScreen(element) {
+    if (element.requestFullscreen) {
+        element.requestFullscreen();
+        isfullScreen = true;
+    } else if (element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+        isfullScreen = true;
+    } else if (element.webkitRequestFullScreen) {
+        element.webkitRequestFullScreen();
+        isfullScreen = true;
+    } else {
+        console.log("未能进入全屏");
+    }
+}
+function exitFullscreen(element) {
+    if (element.exitFullscreen) {
+        element.exitFullscreen();
+        isfullScreen = false;
+    } else if (element.mozCancelFullScreen) {
+        element.mozCancelFullScreen();
+        isfullScreen = false;
+    } else if (element.webkitCancelFullScreen) {
+        element.webkitCancelFullScreen();
+        isfullScreen = false;
+    } else {
+        console.log("未能退出全屏");
+    }
+}
+function fullScreen() {
+    if (isfullScreen) {
+        exitFullscreen(document);
+        console.log("exitFullscreen");
+    } else {
+        requestFullScreen(nyarukolivediv);
+        console.log("requestFullScreen");
+    }
+}
+function wpnyarukoliveinit() {
+    if (typeof(nyarukolive_config) == "undefined") nyarukolive_error(1);
+    nyarukolive_lconf = nyarukolive_loadconfig(nyarukolive_config);
+    if (nyarukolive_lconf == 0) {
+        if (chkhttps()) {
+            nyarukolive_selectmode(nyarukolive_playermode);
+            updatetime();
+            setInterval("updatetime()","1000");
+        }
+    } else {
+        nyarukolive_error(nyarukolive_lconf);
+    }
+    console.log("Loading Video ...OK");
+}
+if (typeof(yashitheme) != "undefined" && yashitheme == "wpnyarukof") {
+    if (wpnyarukolive_ready) {
+        wpnyarukolive_ready = false;
+    } else {
+        wpnyarukoliveinit();
     }
 } else {
-    nyarukolive_error(nyarukolive_lconf);
+    wpnyarukoliveinit();
 }
-console.log("Loading Video ...OK");

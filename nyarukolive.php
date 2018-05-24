@@ -22,7 +22,7 @@ function nyarukoLiveInit() {
 function nyarukoLiveHead() {
     $plugindir = plugins_url('',__FILE__);
     echo '<link href="'.NYARUKOLIVE_PLUGIN_URL.'/style.css" rel="stylesheet">';
-	echo '<script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'/script.js"></script>';
+	//echo '<script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'/script.js"></script>';
 	echo '<style>#wpNyarukoPanelLogo{background-image:url("'.NYARUKOLIVE_PLUGIN_URL.'/wpNyaruko.gif");}#wpNyarukoPanelLogo:hover{background-image:url("'.NYARUKOLIVE_PLUGIN_URL.'/wpNyaruko2.gif");}</style>';
 }
 add_action("admin_head","nyarukoLiveHead");
@@ -40,12 +40,13 @@ function nyarukoLiveShortcode($attr, $content) {
 	}
 	if ($liveplayermode == 0) {
 		$useragent = strtolower($_SERVER['HTTP_USER_AGENT']);
-		if (stristr($useragent,"ios")) {
+		if (stristr($useragent,"iPhone") || stristr($useragent,"ios")) {
 			$liveplayermode = 3;
 		} else {
 			$liveplayermode = 1;
 		}
 	}
+	//echo '<script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'/eruda.js"></script><script>eruda.init();</script>';
 	if ($liveplayermode == 1) {
 		echo '<script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'lib/flv.min.js"></script>';
 	} else if ($liveplayermode == 2) {
@@ -156,10 +157,10 @@ function nyarukoLiveShortcode($attr, $content) {
 		</td>
 		<td width="80"><input name="textfield" class="w100" type="text" id="nyarukolive_danmunick" value="昵称" maxlength="20" disabled="disabled"></td>
 		<td><input name="textfield2" class="w100" type="text" id="nyarukolive_danmuchat" value="输入实时评论..." maxlength="100" disabled="disabled"></td>
-		<td width="70">
+		<td width="80" align="right">
 			<a id="nyarukolive_btndanmusent" href="javascript:;" title="发送弹幕"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-send-24px.svg" alt="发"/></a>
 			<a id="nyarukolive_btnsetting" href="javascript:swmenu();" title="播放器设置"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-settings-20px.svg" alt="设" /></a>
-			<a id="nyarukolive_btnfullscreen" href="javascript:;" title="全屏幕"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-fullscreen-24px.svg" alt="全" /></a>
+			<a id="nyarukolive_btnfullscreen" href="javascript:;" onclick="fullScreen();" title="全屏幕"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-fullscreen-24px.svg" alt="全" /></a>
 		</td>
 		</tr>
 	</tbody>
