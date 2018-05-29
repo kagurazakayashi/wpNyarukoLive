@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>阿里云直播回调模拟</title>
+</head>
+
+<body bgcolor="#D0D0D0">
+<p><strong>阿里云直播回调模拟</strong></p>
+<form name="form1" method="get" action="index.php">
+  <p>
+	action: 
+    <label>
+      <input type="radio" name="action" value="publish" id="action_0">
+      publish</label> 
+    <label>
+      <input name="action" type="radio" id="action_1" value="publish_done" checked="checked">
+      publish_done</label>
+  </p>
+  <p>
+    <label for="ip">ip:</label>
+    <input name="ip" type="text" id="ip" value="192.168.10.1" size="20" maxlength="15">
+  </p>
+  <p>
+    <label for="id">id:</label>
+    <input name="id" type="text" id="id" value="test" size="20" maxlength="20">
+  </p>
+  <p>
+    <label for="app">app:</label>
+    <input name="app" type="text" id="app" value="dev.futureracing.com.cn" size="30" maxlength="50">
+  </p>
+  <p>
+    <label for="appname">appname:</label>
+    <input name="appname" type="text" id="appname" value="racing" size="20" maxlength="20">
+  </p>
+  <p>
+    <label for="time">time:</label>
+    <input name="time" type="text" id="time" value="1527175261" size="15" maxlength="10">
+  </p>
+  <p>
+    <label for="usrargs">usrargs:</label>
+    <input name="usrargs" type="text" id="usrargs" value="dev.futureracing.com.cn&amp;alilive_streamidv2=p011171148040.nm89_15904_33284929_1527175159343" size="100">
+  </p>
+  <p>
+    <label for="node">node:</label>
+    <input name="node" type="text" id="node" value="nm89" size="10" maxlength="10">
+  </p>
+  <p>
+    <input type="submit" name="submit" id="submit" value="提交">
+    <input type="reset" name="reset" id="reset" value="重置">
+    <br>
+  </p>
+</form>
+</body>
+</html>
