@@ -68,7 +68,7 @@
     color: 000;
     font-family: 'Courier New', Courier, monospace;
 }
-#submitoption, #op_form a {
+#submitoption, #wpNyarukoOptionBtnBar a {
   color: #ffffff;
   font-size: 14px;
   padding-top: 10px;
@@ -87,8 +87,40 @@
   background: linear-gradient(to bottom,#666666 0,gray 100%);
   cursor:pointer;
 }
-#submitoption:hover, #submitoption:focus, #op_form a:hover, #op_form a:focus {
+#submitoption:hover, #submitoption:focus, #wpNyarukoOptionBtnBar a:hover, #wpNyarukoOptionBtnBar a:focus {
     background: #e62097;
+}
+.wpNyarukoOptionInfotable {
+    border-collapse: collapse;  
+    margin: 0 auto;  
+    text-align: center;  
+}
+.wpNyarukoOptionInfotable td, .wpNyarukoOptionInfotable th  
+{  
+    border: 1px solid #cad9ea;  
+    color: #666;  
+    height: 30px;  
+}  
+.wpNyarukoOptionInfotable thead th  
+{  
+    background-color: #CCE8EB;  
+    width: 100px;  
+}  
+.wpNyarukoOptionInfotable tr:nth-child(odd)  
+{  
+    background: #fff;  
+}  
+.wpNyarukoOptionInfotable tr:nth-child(even)  
+{  
+    background: #F5FAFA;  
+}
+.wpNyarukoOptionListbox {
+    width: 100%;
+    width: calc(100% - 5px);
+    height: 320px;
+    overflow-x: visible;
+    overflow-y: scroll;
+    background-color: #FFF;
 }
 #wpfooter {
     display: none;
