@@ -22,7 +22,7 @@ function nyarukoLiveInit() {
 function nyarukoLiveHead() {
     $plugindir = plugins_url('',__FILE__);
     echo '<link href="'.NYARUKOLIVE_PLUGIN_URL.'/style.css" rel="stylesheet">';
-	//echo '<script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'/script.js"></script>';
+	echo '<script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'/script.js"></script>';
 	echo '<style>#wpNyarukoPanelLogo{background-image:url("'.NYARUKOLIVE_PLUGIN_URL.'/wpNyaruko.gif");}#wpNyarukoPanelLogo:hover{background-image:url("'.NYARUKOLIVE_PLUGIN_URL.'/wpNyaruko2.gif");}</style>';
 }
 add_action("admin_head","nyarukoLiveHead");
@@ -46,7 +46,7 @@ function nyarukoLiveShortcode($attr, $content) {
 			$liveplayermode = 1;
 		}
 	}
-	//echo '<script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'/eruda.js"></script><script>eruda.init();</script>';
+	// echo '<script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'/eruda.js"></script><script>eruda.init();</script>';
 	if ($liveplayermode == 1) {
 		echo '<script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'lib/flv.min.js"></script>';
 	} else if ($liveplayermode == 2) {
