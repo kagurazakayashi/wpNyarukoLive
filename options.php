@@ -31,31 +31,49 @@ function nyarukoliveNowLive() {
 	}
 	$infos = array_reverse($infos);
 	foreach ($infos as $info) {
-		echo '<tr><th scope="row">'.$info["live_id"].'</th>';
+		echo '<tr><th scope="row">'.$info["live_id"].'</th><td>';
 		if ($info["action"] == 0) {
-			echo '<td>已停止</td>';
+			echo '已停播';
 		} else if ($info["action"] == 0) {
-			echo '<td>推流中</td>';
+			echo '推流中';
 		}
+		if ($info["cmode"] == 1) {
+			echo '<br/>(手动视为播放)';
+		} else if ($info["cmode"] == 2) {
+			echo '<br/>(手动视为停播)';
+		}
+		echo '</td>';
 		echo '<td>'.$info["node"].'</td>';
 		echo '<td>'.$info["app"].'</td>';
 		echo '<td>'.$info["appname"].'</td>';
 		echo '<td>'.$info["id"].'</td>';
 		echo '<td>'.$info["ip"].'</td>';
-		echo '<td>'.$info["time"].'</td>';
-		echo '<td><a href="javascript:alert(\''.$info["usrargs"].'\')" title="'.$info["usrargs"].'">其他参数</a></td>';
-		echo '<td><select name="cmode" id="cmode" onchange="wpNyarukoOptionCCMode(this.value,'.$info["live_id"].');"><option value="0"'.nyarukolivecmodeselect($info["cmode"],0).'>接口控制</option><option value="1"'.nyarukolivecmodeselect($info["cmode"],1).'>手动播放</option><option value="2"'.nyarukolivecmodeselect($info["cmode"],2).'>阻止播放</option></select></td>';
-		echo '<td>弹幕管理</td></tr>';
+		echo '<td>'.str_replace(" ","<br/>",$info["time"]).'</td>';
+		echo '<td><button type="button" onclick="prompt(\'更多额外参数：\',\''.$info["usrargs"].'\');">查看</button></td>';
+		echo '<td><select name="cmode" id="cmode" onchange="wpNyarukoOptionCMgLiveMode(this.value,'.$info["live_id"].');"><option value="0"'.nyarukolivecmodeselect($info["cmode"],0).'>接口控制</option><option value="1"'.nyarukolivecmodeselect($info["cmode"],1).'>手动播放</option><option value="2"'.nyarukolivecmodeselect($info["cmode"],2).'>手动停播</option></select></td>';
+		echo '<td><button type="button" onclick="wpNyarukoOptionCMgLiveDanmaku('.$info["live_id"].');">管理</button></td>';
+		echo '<td><button type="button" onclick="wpNyarukoOptionCMgLiveDelete('.$info["live_id"].');">删除</button></td>';
 	}
 }
 function nyarukolivecmodeselect($cmode,$tmode) {
 	if ($cmode == $tmode) return ' selected="selected"';
 	return '';
 }
+function urlb64encode($str) {
+	return str_replace(array('+','/','='),array('-','_',''),base64_encode($str));
+}
+function urlb64decode($str) {
+	$d1 = str_replace(array('-','_'),array('+','/'),$str);
+	$d4 = strlen($d1) % 4;
+	if ($d4) $d1 .= substr('====', $d4);
+	return base64_decode($d1);
+}
 function nyarukoliveOptionsPage() {
 	if (isset($_GET["nyamode"])) {
-		echo '<div id="wpNyarukoInfo">'.wpNyarukoCModeGet($_GET["nyamode"]).'</div>';
+		wpNyarukoCModeGet($_GET["nyamode"]);
+		die('<div id="wpNyarukoInfo">正在应用设置...</div>');
 	}
+	if (isset($_GET["info"])) echo '<div id="wpNyarukoInfo">'.urlb64decode($_GET["info"]).'</div>';
 ?>
 <div id="optionbox">
 	<div id="wpNyarukoOptionTitle"><a title="版本升级日志" class="link" href="https://github.com/kagurazakayashi/wpNyarukoLive/commits/master" target="_blank"><div id="wpNyarukoPanelLogo"></div></a>&nbsp;视频直播（版本&nbsp;0.1）</div><hr>
@@ -90,9 +108,10 @@ function nyarukoliveOptionsPage() {
 			<th scope="col">名称</th>
 			<th scope="col">推流IP</th>
 			<th scope="col">更新时间</th>
-			<th scope="col">其他参数</th>
+			<th scope="col">参数</th>
 			<th scope="col">播放控制</th>
-			<th scope="col">弹幕管理</th>
+			<th scope="col">弹幕</th>
+			<th scope="col">记录</th>
 			</tr>
 			<?php nyarukoliveNowLive(); ?>
 		</tbody>
@@ -107,7 +126,19 @@ function nyarukoliveOptionsPage() {
 		<p>以下设置同时生效于直播播放和弹幕。</p>
 	</div>
 </div>
-<script>wpNyarukoOptionChTab(0);</script>
+<script>wpNyarukoOptionChTab(0,true);</script>
 <?php
+}
+function wpNyarukoCModeGet($nyamode) {
+	global $wpdb;
+	$alertinfo = "已受理您的变更。";
+	if ($nyamode == "mglive" && isset($_GET["live_id"]) && isset($_GET["cmode"])) {
+		$live_id = intval($_GET["live_id"]);
+		$cmode = intval($_GET["cmode"]);
+		//UPDATE `racing_live` SET `cmode` = '1' WHERE `racing_live`.`live_id` = 16
+		$dbinfos = $wpdb->get_results("UPDATE `".$wpdb->prefix."live` SET `cmode`=".$cmode." WHERE `".$wpdb->prefix."live`.`live_id`=".$live_id.";");
+		$alertinfo = "将 ".$live_id." 号直播间播放状态设置为 ".$cmode;
+	}
+	echo "<script>window.location.href = 'tools.php?page=nyarukolive-options&info=".urlb64encode($alertinfo)."';</script>";
 }
 ?>
