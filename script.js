@@ -5,7 +5,7 @@ function wpNyarukoOptionChTab(tabid,first = false) {
             tabid = parseInt(urlsh[1]);
         }
     }
-    if (tabid <= 0 || tabid > 3) {
+    if (tabid <= 0 || tabid > 4) {
         tabid = 1;
     }
     var wpNyarukoOptionMenuBarItem = document.getElementsByClassName("wpNyarukoOptionMenuBarItem");
@@ -22,12 +22,12 @@ function wpNyarukoOptionChTab(tabid,first = false) {
     document.getElementById("wpNyarukoOptionTab"+tabid).style.display = "inline";
     if (!first) window.location.href = 'tools.php?page=nyarukolive-options#'+tabid;
 }
-function wpNyarukoOptionCMgLiveMode(cmode,live_id) {
-    window.location.href = 'tools.php?page=nyarukolive-options&nyamode=mglive&live_id='+live_id+'&cmode='+cmode;
+function wpNyarukoOptionCMgLiveMode(cmode,liveid) {
+    window.location.href = 'tools.php?page=nyarukolive-options&nyamode=mglive&liveid='+liveid+'&cmode='+cmode;
 }
-function wpNyarukoOptionCMgLiveDelete(live_id) {
-    if (window.confirm("将会永久删除这条记录和相关弹幕。\n如果后台接口再次收到目标为此条目的设置，将新建条目。\n确定吗？")) window.location.href = 'tools.php?page=nyarukolive-options&nyamode=mgdellive&live_id='+live_id;
+function wpNyarukoOptionCMgLiveDelete(liveid) {
+    if (window.confirm("将会永久删除这条记录和相关弹幕。\n如果后台接口再次收到目标为此条目的设置，将新建条目。\n确定吗？")) window.location.href = 'tools.php?page=nyarukolive-options&nyamode=mgdellive&liveid='+liveid;
 }
-function wpNyarukoOptionCMgLiveDanmaku(live_id) {
-    window.location.href = 'tools.php?page=nyarukolive-options&nyamode=mddmmgr&live_id='+live_id;
+function wpNyarukoOptionCMgLiveDanmaku(liveid) {
+    window.location.href = 'tools.php?page=nyarukolive-options&nyamode=mddmmgr&liveid='+liveid;
 }

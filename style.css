@@ -61,10 +61,10 @@
 #optionbox table input:focus,#optionbox table textarea:focus,#optionbox table select:focus,#optionbox table option:focus {
     background-color: #FFF;
     font-family: monospace;
-    border-left: dotted #FE99CC 2px;
-    border-top: dotted #FE99CC 2px;
-    border-right: ridge #FE99CC 2px;
-    border-bottom: ridge #FE99CC 2px;
+    border-left: dotted #FE99CC 1px;
+    border-top: dotted #FE99CC 1px;
+    border-right: ridge #FE99CC 1px;
+    border-bottom: ridge #FE99CC 1px;
     color: 000;
     font-family: 'Courier New', Courier, monospace;
 }
@@ -147,7 +147,7 @@
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
 }
-#wpNyarukoOptionMenuBarItem3 {
+#wpNyarukoOptionMenuBarItem4 {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
 }

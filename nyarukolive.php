@@ -155,8 +155,8 @@ function nyarukoLiveShortcode($attr, $content) {
 		<td width="20">
 			<a id="nyarukolive_btnplay" href="javascript:nyarukolive_playpausebtn();" title="播放/暂停"><img id="nyarukolive_btnplayi" class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-play_arrow-24px.svg" src2="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-play_arrow-24px.svg" src3="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-pause-24px.svg" /></a>
 		</td>
-		<td width="80"><input name="textfield" class="w100" type="text" id="nyarukolive_danmunick" value="昵称" maxlength="20" disabled="disabled"></td>
-		<td><input name="textfield2" class="w100" type="text" id="nyarukolive_danmuchat" value="输入实时评论..." maxlength="100" disabled="disabled"></td>
+		<td width="80"><input name="textfield" class="w100" type="text" id="nyarukolive_danmunick" value="昵称" maxlength="20"></td>
+		<td><input name="textfield2" class="w100" type="text" id="nyarukolive_danmuchat" value="输入实时评论..." maxlength="100"></td>
 		<td width="80" align="right">
 			<a id="nyarukolive_btndanmusent" href="javascript:;" title="发送弹幕"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-send-24px.svg" alt="发"/></a>
 			<a id="nyarukolive_btnsetting" href="javascript:swmenu();" title="播放器设置"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-settings-20px.svg" alt="设" /></a>

@@ -17,7 +17,7 @@ function nyarukoliveNowLive() {
 	$infos = [];
 	$nonetext = "(未知)";
 	foreach ($dbinfos as $dbinfo) {
-		$info["live_id"] = isset($dbinfo->live_id) ? $dbinfo->live_id : $nonetext;
+		$info["liveid"] = isset($dbinfo->liveid) ? $dbinfo->liveid : $nonetext;
 		$info["action"] = isset($dbinfo->action) ? $dbinfo->action : -1;
 		$info["ip"] = isset($dbinfo->ip) ? $dbinfo->ip : $nonetext;
 		$info["app"] = isset($dbinfo->app) ? $dbinfo->app : $nonetext;
@@ -31,7 +31,7 @@ function nyarukoliveNowLive() {
 	}
 	$infos = array_reverse($infos);
 	foreach ($infos as $info) {
-		echo '<tr><th scope="row">'.$info["live_id"].'</th><td>';
+		echo '<tr><th scope="row">'.$info["liveid"].'</th><td>';
 		if ($info["action"] == 0) {
 			echo '已停播';
 		} else if ($info["action"] == 0) {
@@ -50,9 +50,9 @@ function nyarukoliveNowLive() {
 		echo '<td>'.$info["ip"].'</td>';
 		echo '<td>'.str_replace(" ","<br/>",$info["time"]).'</td>';
 		echo '<td><button type="button" onclick="prompt(\'更多额外参数：\',\''.$info["usrargs"].'\');">查看</button></td>';
-		echo '<td><select name="cmode" id="cmode" onchange="wpNyarukoOptionCMgLiveMode(this.value,'.$info["live_id"].');"><option value="0"'.nyarukolivecmodeselect($info["cmode"],0).'>接口控制</option><option value="1"'.nyarukolivecmodeselect($info["cmode"],1).'>手动播放</option><option value="2"'.nyarukolivecmodeselect($info["cmode"],2).'>手动停播</option></select></td>';
-		echo '<td><button type="button" onclick="wpNyarukoOptionCMgLiveDanmaku('.$info["live_id"].');">管理</button></td>';
-		echo '<td><button type="button" onclick="wpNyarukoOptionCMgLiveDelete('.$info["live_id"].');">删除</button></td>';
+		echo '<td><select name="cmode" id="cmode" onchange="wpNyarukoOptionCMgLiveMode(this.value,'.$info["liveid"].');"><option value="0"'.nyarukolivecmodeselect($info["cmode"],0).'>接口控制</option><option value="1"'.nyarukolivecmodeselect($info["cmode"],1).'>手动播放</option><option value="2"'.nyarukolivecmodeselect($info["cmode"],2).'>手动停播</option></select></td>';
+		echo '<td><button type="button" onclick="wpNyarukoOptionCMgLiveDanmaku('.$info["liveid"].');">管理</button></td>';
+		echo '<td><button type="button" onclick="wpNyarukoOptionCMgLiveDelete('.$info["liveid"].');">删除</button></td>';
 	}
 }
 function nyarukolivecmodeselect($cmode,$tmode) {
@@ -77,24 +77,46 @@ function nyarukoliveOptionsPage() {
 ?>
 <div id="optionbox">
 	<div id="wpNyarukoOptionTitle"><a title="版本升级日志" class="link" href="https://github.com/kagurazakayashi/wpNyarukoLive/commits/master" target="_blank"><div id="wpNyarukoPanelLogo"></div></a>&nbsp;视频直播（版本&nbsp;0.1）</div><hr>
-	<!-- <form action="#" method="post" enctype="multipart/form-data" name="op_form" id="op_form">
-		<table border="0" cellspacing="0" cellpadding="10">
-		<tbody>
-		<tr>
-			<td>笔记(不呈现)</td>
-			<td><input name="wpNyarukoTest" type="text" id="wpNyarukoTest" value="" size=64 maxlength=128 /></td>
-			<td>信息：</td>
-			<td>此插件目前不可用。</td>
-		</tr>
-		</tbody>
-		</table>
-		<hr><div id="wpNyarukoOptionBtnBar"><p><input id="submitoption" type="submit" name="nyarukolive_input_save" value="应用这些设定" /></p></div>
-	</form>
-	<hr> -->
 	<div id="wpNyarukoOptionMenuBar">
-		<p><div class="wpNyarukoOptionMenuBarItem" id="wpNyarukoOptionMenuBarItem1" onclick="wpNyarukoOptionChTab(1);">推流记录</div><div class="wpNyarukoOptionMenuBarItem" id="wpNyarukoOptionMenuBarItem2" onclick="wpNyarukoOptionChTab(2);">弹幕管理</div><div class="wpNyarukoOptionMenuBarItem" id="wpNyarukoOptionMenuBarItem3" onclick="wpNyarukoOptionChTab(3);">权限设置</div></p>
+		<p><div class="wpNyarukoOptionMenuBarItem" id="wpNyarukoOptionMenuBarItem1" onclick="wpNyarukoOptionChTab(1);">基本设置</div><div class="wpNyarukoOptionMenuBarItem" id="wpNyarukoOptionMenuBarItem2" onclick="wpNyarukoOptionChTab(2);">推流记录</div><div class="wpNyarukoOptionMenuBarItem" id="wpNyarukoOptionMenuBarItem3" onclick="wpNyarukoOptionChTab(3);">弹幕管理</div><div class="wpNyarukoOptionMenuBarItem" id="wpNyarukoOptionMenuBarItem4" onclick="wpNyarukoOptionChTab(4);">权限设置</div></p>
 	</div>
 	<div class="wpNyarukoOptionTab" id="wpNyarukoOptionTab1">
+		<form action="#" method="post" enctype="multipart/form-data" name="op_form" id="op_form">
+			<table border="0" cellspacing="0" cellpadding="10">
+			<tbody>
+			<tr>
+				<td>笔记(不呈现)</td>
+				<td><input name="wpNyarukoTest" type="text" id="wpNyarukoTest" value="" size=64 maxlength=128 /></td>
+			</tr>
+			<tr>
+				<td>弹幕发送权限</td>
+				<td><label>
+					<input type="radio" name="wpNyarukoLimit" value="0" id="wpNyarukoLimit_0">
+					禁止任何人发送弹幕</label>
+				<br>
+				<label>
+					<input type="radio" name="wpNyarukoLimit" value="1" id="wpNyarukoLimit_1">
+					只允许实名注册认证用户发送弹幕</label>
+				<br>
+				<label>
+					<input type="radio" name="wpNyarukoLimit" value="2" id="wpNyarukoLimit_2">
+					允许所有注册用户发送弹幕</label>
+				<br>
+				<label>
+					<input type="radio" name="wpNyarukoLimit" value="3" id="wpNyarukoLimit_3" checked="checked">
+					允许所有人发送弹幕</label>
+				<br></td>
+			</tr>
+			<tr>
+				<td>前端播放器<br/>状态刷新时间</td>
+				<td>每隔 <input name="wpNyarukoStatusTime" type="number" id="wpNyarukoStatusTime" max="999" min="1" step="1" value="5" size="3"> 秒检查一次直播间状态和新弹幕</td>
+			</tr>
+			</tbody>
+			</table>
+			<hr><div id="wpNyarukoOptionBtnBar"><p><input id="submitoption" type="submit" name="nyarukolive_input_save" value="应用这些设定" /></p></div>
+		</form>
+	</div>
+	<div class="wpNyarukoOptionTab" id="wpNyarukoOptionTab2">
 		<h2>推流记录</h2>
 		<p>在回调接口收到参数以后，将会记录在这里。</p>
 		<table width="100%" border="1" cellspacing="1" cellpadding="1" class="wpNyarukoOptionInfotable">
@@ -117,11 +139,11 @@ function nyarukoliveOptionsPage() {
 		</tbody>
 		</table>
 	</div>
-	<div class="wpNyarukoOptionTab" id="wpNyarukoOptionTab2">
+	<div class="wpNyarukoOptionTab" id="wpNyarukoOptionTab3">
 		<h2>弹幕管理</h2>
 		<p>在「推流记录」中选择一个直播流后面的「弹幕管理」。</p>
 	</div>
-	<div class="wpNyarukoOptionTab" id="wpNyarukoOptionTab3">
+	<div class="wpNyarukoOptionTab" id="wpNyarukoOptionTab4">
 		<h2>IP 地址屏蔽</h2>
 		<p>以下设置同时生效于直播播放和弹幕。</p>
 	</div>
@@ -132,12 +154,12 @@ function nyarukoliveOptionsPage() {
 function wpNyarukoCModeGet($nyamode) {
 	global $wpdb;
 	$alertinfo = "已受理您的变更。";
-	if ($nyamode == "mglive" && isset($_GET["live_id"]) && isset($_GET["cmode"])) {
-		$live_id = intval($_GET["live_id"]);
+	if ($nyamode == "mglive" && isset($_GET["liveid"]) && isset($_GET["cmode"])) {
+		$liveid = intval($_GET["liveid"]);
 		$cmode = intval($_GET["cmode"]);
-		//UPDATE `racing_live` SET `cmode` = '1' WHERE `racing_live`.`live_id` = 16
-		$dbinfos = $wpdb->get_results("UPDATE `".$wpdb->prefix."live` SET `cmode`=".$cmode." WHERE `".$wpdb->prefix."live`.`live_id`=".$live_id.";");
-		$alertinfo = "将 ".$live_id." 号直播间播放状态设置为 ".$cmode;
+		//UPDATE `racing_live` SET `cmode` = '1' WHERE `racing_live`.`liveid` = 16
+		$dbinfos = $wpdb->get_results("UPDATE `".$wpdb->prefix."live` SET `cmode`=".$cmode." WHERE `".$wpdb->prefix."live`.`liveid`=".$liveid.";");
+		$alertinfo = "将 ".$liveid." 号直播间播放状态设置为 ".$cmode;
 	}
 	echo "<script>window.location.href = 'tools.php?page=nyarukolive-options&info=".urlb64encode($alertinfo)."';</script>";
 }

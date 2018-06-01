@@ -37,7 +37,7 @@ function nyalivealicb($table_prefix) {
         $kid = htmlentities($_GET["id"]);
         $kapp = htmlentities($_GET["app"]);
         $appname = htmlentities($_GET["appname"]);
-        $psql = "SELECT `live_id` FROM `".$table_prefix."live` WHERE (app='".$kapp."' and appname='".$appname."' and id='".$kid."');";
+        $psql = "SELECT `liveid` FROM `".$table_prefix."live` WHERE (app='".$kapp."' and appname='".$appname."' and id='".$kid."');";
         $aid = nyalivedb($psql);
         if ($aid == NYARUKOLIVE_ERROR) die(echoerror(-2,"db error"));
         if (isset($aid[0])) {
@@ -68,7 +68,7 @@ function nyalivealicb($table_prefix) {
             $sqlkvsstrv = "`".$sqlkeys[$i]."`='".$sqlvals[$i]."'";
             array_push($sqlkvsstr,$sqlkvsstrv);
         }
-        $sql = "UPDATE `".$table_prefix."live` SET ".implode(",", $sqlkvsstr)." WHERE `".$table_prefix."live`.`live_id`=".$updateid.";";
+        $sql = "UPDATE `".$table_prefix."live` SET ".implode(",", $sqlkvsstr)." WHERE `".$table_prefix."live`.`liveid`=".$updateid.";";
         $dbupdmode = [1,"update ok"];
     } else {
         $sqlkeysstr = "(`".implode("`,`", $sqlkeys)."`)";
