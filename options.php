@@ -13,8 +13,7 @@ function nyarukoliveGetOptions() {
 //获得正在进行中的直播
 function nyarukoliveNowLive() {
 	global $wpdb;
-	$dbinfos = $wpdb->get_results("select * from `".$wpdb->prefix."live`;");
-	$infos = [];
+	$dbinfos = $wpdb->get_results("SELECT * FROM `".$wpdb->prefix."live`;");
 	$nonetext = "(未知)";
 	foreach ($dbinfos as $dbinfo) {
 		$info["liveid"] = isset($dbinfo->liveid) ? $dbinfo->liveid : $nonetext;

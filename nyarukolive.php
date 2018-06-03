@@ -63,6 +63,31 @@ function nyarukoLiveShortcode($attr, $content) {
 		$pagetype = "2";
 	}
 	$livepageid = get_the_ID();
+    //TODO: liveid  res app id 需要过滤
+	global $wpdb;
+	//select * from message where (typeid=31) or (typeid=30) or (typeid=32) or (typeid=33) order by id desc;
+	$dbinfos = $wpdb->get_results("SELECT `liveid`,`action`,`cmode` FROM `".$wpdb->prefix."live` WHERE (app='".$attr["res"]."') AND (appname='".$attr["app"]."') AND (id='".$attr["id"]."') ORDER BY liveid DESC;");
+	$info = [];
+	if (count($dbinfos) > 0) {
+		$dbinfo = $dbinfos[0];
+		$info["liveid"] = isset($dbinfo->liveid) ? $dbinfo->liveid : $nonetext;
+		$info["action"] = isset($dbinfo->action) ? $dbinfo->action : -1;
+		$info["cmode"] = isset($dbinfo->cmode) ? $dbinfo->cmode : -1;
+		print_r($info);
+	} else {
+		//ERR
+	}
+	// $infos = [];
+	// $nonetext = "";
+	// foreach ($dbinfos as $dbinfo) {
+	// 	$info["liveid"] = isset($dbinfo->liveid) ? $dbinfo->liveid : $nonetext;
+	// 	$info["action"] = isset($dbinfo->action) ? $dbinfo->action : -1;
+	// 	$info["cmode"] = isset($dbinfo->cmode) ? $dbinfo->cmode : -1;
+	// 	array_push($infos,$info);
+	// }
+	// $infos = array_reverse($infos);
+	// print_r($infos);
+	//
 	echo '<script>var nyarukolive_config={"pagetype":'.$pagetype.',"pageid":'.$livepageid.',"mode":'.$liveplayermode.',"pluginurl":"'.NYARUKOLIVE_PLUGIN_URL.'"';
 	foreach($attr as $k => $v){
 		echo ',"'.$k.'":"'.$v.'"';
