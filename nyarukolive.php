@@ -75,7 +75,7 @@ function nyarukoLiveShortcode($attr, $content) {
     $info = [];
     if (count($dbinfos) > 0) {
         $dbinfo = $dbinfos[0];
-        $info["liveid"] = isset($dbinfo->liveid) ? $dbinfo->liveid : $nonetext;
+        $info["liveid"] = isset($dbinfo->liveid) ? $dbinfo->liveid : -1;
         $info["action"] = isset($dbinfo->action) ? $dbinfo->action : -1;
         $info["cmode"] = isset($dbinfo->cmode) ? $dbinfo->cmode : -1;
         $info["ip"] = isset($dbinfo->ip) ? $dbinfo->ip : "0.0.0.0";
@@ -89,7 +89,7 @@ function nyarukoLiveShortcode($attr, $content) {
     } else if ($errcode[0] == 0) {
         $errcode = [-3,"配置错误：直播尚未登记"];
     }
-    echo '<script>var nyarukolive_config={"pcode":'.$errcode[0].',"pinfo":"'.$errcode[1].'","pagetype":'.$pagetype.',"pageid":'.$livepageid.',"mode":'.$liveplayermode.',"pluginurl":"'.NYARUKOLIVE_PLUGIN_URL.'"';
+    echo '<script>var nyarukolive_config={"pcode":'.$errcode[0].',"pinfo":"'.$errcode[1].'","liveid":'.$info["liveid"].',"pagetype":'.$pagetype.',"pageid":'.$livepageid.',"mode":'.$liveplayermode.',"pluginurl":"'.NYARUKOLIVE_PLUGIN_URL.'"';
     foreach($attr as $k => $v){
         echo ',"'.$k.'":"'.$v.'"';
     }
@@ -102,10 +102,14 @@ function nyarukoLiveShortcode($attr, $content) {
         <tr>
         <td width="50" align="center"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-live_tv-24px.svg" /></td>
         <td align="left"><?php 
-        if (isset($attr["title"])) {
-            echo $attr["title"];
+        if ($errcode[0] == 0) {
+            if (isset($attr["title"])) {
+                echo $attr["title"];
+            } else {
+                echo "L&nbsp;I&nbsp;V&nbsp;E";
+            }
         } else {
-            echo "L&nbsp;I&nbsp;V&nbsp;E";
+            echo "直播暂停中";
         } ?></td>
         <td id="nyarukolive_rtoolbox1" align="right"<?php 
         if ($errcode[0] == 0) {
@@ -198,10 +202,11 @@ function nyarukoLiveShortcode($attr, $content) {
         </tr>
     </tbody>
     </table>
-    </div>
-    <?php } else {
+    <?php } else if ($errcode[0] == -1 && isset($attr["stoppic"])) {
+        echo '<img id="nyarukolive_stopalertimg" src="'.$attr["stoppic"].'" alt="目前尚未直播" />';
+    } else {
         echo '<div id="nyarukolive_stopalert"><h1>&emsp;</h1><h1>暂时无法观看</h1><h2>'.$errcode[1].'</h2><h2>代码：'.$errcode[0].'</h2></div>';
     }
-    echo '<script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'livescript.js"></script>';
+    echo '</div><script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'livescript.js"></script>';
 }
 add_shortcode('nyarukolive', 'nyarukoLiveShortcode');

@@ -143,3 +143,11 @@
     font-size: 12pt;
     color: lightgray;
 }
+#nyarukolive_stopalertimg {
+    width: 100%;
+    height: auto;
+    padding: 0 !important;
+    margin: 0 !important;
+    pointer-events: none;
+    user-select: none;
+}

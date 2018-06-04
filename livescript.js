@@ -13,6 +13,10 @@ var nyarukolive_protocol = "";
 var nyarukolive_timezone = 10000;
 var isfullScreen = false;
 function nyarukolive_loadconfig(config) {
+    if (config["pcode"] && config["pinfo"]) {
+        console.log("wpNyarukoLive Status", config["pcode"], config["pinfo"]);
+        return 1;
+    }
     if (config["mode"]) nyarukolive_playermode = parseInt(config["mode"]);
     if (config["flv"]) nyarukolive_flv = config["flv"];
     if (config["hls"]) nyarukolive_hls = config["hls"];
@@ -193,7 +197,7 @@ function wpnyarukoliveinit() {
             updatetime();
             setInterval("updatetime()","1000");
         }
-    } else {
+    } else if (nyarukolive_lconf != 1) {
         nyarukolive_error(nyarukolive_lconf);
     }
     console.log("Loading Video ...OK");
