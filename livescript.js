@@ -102,7 +102,7 @@ function nyarukolive_playpausebtn() {
     // }
 }
 function nyarukolive_error(err) {
-    $("#nyarukolive").html('<div id="nyarukolive_errorinfo" class="nyarukolive_errordig"><p><b>直播播放器加载失败</b></p><p>错误代码：'+err+'</p></div>');
+    document.getElementById('nyarukolive').innerHTML = '<div id="nyarukolive_errorinfo" class="nyarukolive_errordig"><p><b>直播播放器加载失败</b></p><p>错误代码：'+err+'</p></div>';
 }
 function chkhttps() {
     var newurl = "";
@@ -114,7 +114,7 @@ function chkhttps() {
         newurl = window.location.href.replace(/https:/, "http:");
     }
     if (newurl != "") {
-        $("#nyarukolive").html('<div id="nyarukolive_errorinfo" class="nyarukolive_warndig"><p><b>正在配置传输协议</b></p><p>正在配置 HTTP'+newprotocol+' ...</p></div>');
+        document.getElementById('nyarukolive').innerHTML = '<div id="nyarukolive_errorinfo" class="nyarukolive_warndig"><p><b>正在配置传输协议</b></p><p>正在配置 HTTP'+newprotocol+' ...</p></div>';
         setTimeout("window.location.href='"+newurl+"';",1000);
         return false;
     }
@@ -143,13 +143,106 @@ function updatetimecheck24(hour) {
     else if (newhour > 24) { newhour -= 24; }
     return newhour;
 }
-function swmenu(isopen) {
-    var nyarukolivemenu = document.getElementById("nyarukolive_menu");
-    if (nyarukolivemenu.style.display == "none") {
+function swmenu(vmenuid,noclose = false) {
+    var vmenuname = ["nyarukolive_menu","nyarukolive_usermenu"];
+    var nyarukolivemenu = document.getElementById(vmenuname[vmenuid]);
+    if (vmenuid == 1) document.getElementById("nyarukolive_danmunick").blur();
+    if (nyarukolivemenu.style.display != "block") {
         nyarukolivemenu.style.display = "block";
+        if (vmenuid == 1) document.getElementById("nyarukolive_dmuname").focus();
     } else {
-        nyarukolivemenu.style.display = "none";
+        if (!noclose) nyarukolivemenu.style.display = "none";
     }
+}
+function saveguestname() {
+    var guestname = document.getElementById("nyarukolive_dmuname").value;
+    var guestmail = document.getElementById("nyarukolive_dmumail").value;
+    var guesturl = document.getElementById("nyarukolive_dmuurl").value;
+    if (guestname == "" || guestmail == "") {
+        alert("用户名和电子邮件均不能为空。");
+    } else {
+        setCookie('guestname',guestname,365);
+        setCookie('guestmail',guestmail,365);
+        setCookie('guesturl',guesturl.replace(":", ")"),365);
+    }
+    document.getElementById("nyarukolive_danmunick").value = guestname;
+    swmenu(1);
+}
+function loadguestname($isonlyload = false) {
+    var guestname = getCookie('guestname');
+    var guestmail = getCookie('guestmail');
+    var guesturl = getCookie('guesturl').replace(")", ":");
+    if ($isonlyload) {
+        return [guestname,guestmail,guesturl];
+    }
+    document.getElementById("nyarukolive_dmuname").value = guestname;
+    document.getElementById("nyarukolive_danmunick").value = guestname;
+    document.getElementById("nyarukolive_dmumail").value = guestmail;
+    document.getElementById("nyarukolive_dmuurl").value = guesturl;
+    swmenu(1);
+}
+function sendBarrageChk() {
+    var guestinfos = loadguestname(true);
+    var clearguestinfos = [];
+    var isok = true;
+    // for (var i = 0; i < guestinfos.length; i++) {
+    //     if (guestinfos[i] != cleartext(guestinfos[i],true)) isok = false;
+    // }
+    if (guestinfos[0] == "" || guestinfos[1] == "") isok = false;
+    if (!isok) {
+        document.getElementById("nyarukolive_danmuchat").blur();
+        swmenu(1,true);
+    }
+}
+function cleartext(thistbox,isstring = false,usefullchar = false) {
+    var pattern = new RegExp("[`~!#$^&*()=|{}';',\\[]<>@:/.?~！#￥……&*（）——|{}【】‘；：”“'。，、？]");
+    if (isstring) {
+        if (thistbox == "") return thistbox;
+        var svalue = thistbox;
+        return svalue.replace(pattern, '');
+    } else if (usefullchar && !isstring) {
+        thistbox.value = thistbox.value.replace(pattern, '');
+    } else {
+        var svalue = thistbox.value;
+        var sid = thistbox.id;
+        // var keychar = ;
+        var rs = "";
+        var patterns = [new RegExp("[`~!#$^&*()=|{}';',\\[]<>?~！#￥……&*（）——|{}【】‘；：”“'。，、？]")];
+        if (sid != "nyarukolive_dmumail") {
+            patterns.push(new RegExp("@."));
+        }
+        if (sid != "nyarukolive_dmuurl") {
+            patterns.push(new RegExp(":/."));
+        }
+        for (var i = 0; i < svalue.length; i++) {
+            var sub = svalue.substr(i, 1);
+            for (var j = 0; j < patterns.length; j++) {
+                sub = sub.replace(patterns[j], '');
+            }
+            rs += sub;
+        }
+        thistbox.value = rs;
+    }
+}
+function setCookie(c_name,value,expiredays)
+{
+    var exdate=new Date();
+    exdate.setDate(exdate.getDate()+expiredays);
+    document.cookie=c_name+ "=" +escape(value)+((expiredays==null) ? "" : ";expires="+exdate.toGMTString());
+}
+function getCookie(c_name)
+{
+    if (document.cookie.length>0)
+    {
+        c_start=document.cookie.indexOf(c_name + "=");
+        if (c_start!=-1) { 
+            c_start=c_start + c_name.length+1;
+            c_end=document.cookie.indexOf(";",c_start);
+            if (c_end==-1) c_end=document.cookie.length;
+            return unescape(document.cookie.substring(c_start,c_end));
+        }
+    }
+    return ""
 }
 function requestFullScreen(element) {
     if (element.requestFullscreen) {
@@ -188,6 +281,17 @@ function fullScreen() {
         console.log("requestFullScreen");
     }
 }
+function removeWpNyarukoNPlayer() {
+    if (typeof(yashitheme) != "undefined" && yashitheme == "wpnyarukof") {
+        nyarukoplayer_stop();
+        // $("#homepage_title1").remove();
+        $("#homepage_title2").remove();
+        // $("#homepage_titleb").remove();
+        // $("#homepage_topimgbox").remove();
+        // $("#homepage_title").remove();
+        // $(".nyarukoplayer").remove();
+    }
+}
 function wpnyarukoliveinit() {
     if (typeof(nyarukolive_config) == "undefined") nyarukolive_error(1);
     nyarukolive_lconf = nyarukolive_loadconfig(nyarukolive_config);
@@ -201,6 +305,7 @@ function wpnyarukoliveinit() {
         nyarukolive_error(nyarukolive_lconf);
     }
     console.log("Loading Video ...OK");
+    removeWpNyarukoNPlayer();
 }
 if (typeof(yashitheme) != "undefined" && yashitheme == "wpnyarukof") {
     if (wpnyarukolive_ready) {

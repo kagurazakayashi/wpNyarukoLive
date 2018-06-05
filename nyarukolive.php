@@ -16,9 +16,11 @@ define("NYARUKOLIVE_PLUGIN_URL", plugin_dir_url( __FILE__ ));
 define("NYARUKOLIVE_FULL_DIR", plugin_dir_path( __FILE__ ));
 define("NYARUKOLIVE_TEXT_DOMAIN", "nyarukolive");
 include_once NYARUKOLIVE_FULL_DIR."options.php";
-function nyarukoLiveInit() {
-
-}
+include_once NYARUKOLIVE_FULL_DIR."api.php";
+nyarukoLiveAPI();
+// function nyarukoLiveAlert() {
+//     echo "还未完成初始设定";
+// }
 function nyarukoLiveHead() {
     $plugindir = plugins_url('',__FILE__);
     echo '<link href="'.NYARUKOLIVE_PLUGIN_URL.'/style.css" rel="stylesheet">';
@@ -26,7 +28,7 @@ function nyarukoLiveHead() {
     echo '<style>#wpNyarukoPanelLogo{background-image:url("'.NYARUKOLIVE_PLUGIN_URL.'/wpNyaruko.gif");}#wpNyarukoPanelLogo:hover{background-image:url("'.NYARUKOLIVE_PLUGIN_URL.'/wpNyaruko2.gif");}</style>';
 }
 add_action("admin_head","nyarukoLiveHead");
-add_action("admin_notices","nyarukoLiveInit");
+// add_action("admin_notices","nyarukoLiveAlert");
 function nyarukoLiveAdminlink($links){
     $links[] = '<a href="'.get_admin_url(null, 'tools.php?page='.NYARUKOLIVE_TEXT_DOMAIN.'-options').'">直播设置</a>';
     return $links;
@@ -141,11 +143,24 @@ function nyarukoLiveShortcode($attr, $content) {
         <div id="nyarukolive_pausebox" onclick="nyarukolive_playpausebtn();">
             <img id="nyarukolive_playbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline_play_circle_outline_white_48dp.png" alt="点击播放" />
         </div>
-        <table id="nyarukolive_menu" width="100%">
+        <table id="nyarukolive_usermenu">
+        <tbody>
+            <tr>
+            <td>用户信息</td>
+            <td align="right"><a href="javascript:saveguestname();" title="保存用户信息"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-done-24px.svg" alt="√" /></a>&emsp;<a href="javascript:loadguestname();" title="放弃更改"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-close-24px.svg" alt="×" /></a></td>
+            </tr>
+            <tr><td colspan="2" width="100%">昵称（必须）：<br/><input name="nyarukolive_dmuname" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_dmuname" placeholder="输入显示名称" value="" maxlength="16" oninput="cleartext(this);"></td></tr>
+            <tr><td colspan="2" width="100%">电子邮件（必须）：<br/><input name="nyarukolive_dmumail" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_dmumail" placeholder="输入电子邮件" value="" maxlength="32" oninput="cleartext(this);"></td></tr>
+            <tr><td colspan="2" width="100%">网址（选填）：<br/><input name="nyarukolive_dmuurl" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_dmuurl" placeholder="输入个人网址（选填）" value="" maxlength="64" oninput="cleartext(this);"></td></tr>
+            <tr><td colspan="2" width="100%">使用我自己的账户：<br/><a>登录/注册(暂未开放)</a></td></tr>
+        </tbody>
+        </table>
+        <script>swmenu(1);loadguestname();</script>
+        <table id="nyarukolive_menu">
         <tbody>
             <tr>
             <td>播放器设置</td>
-            <td align="right"><a href="javascript:swmenu();" title="关闭设置菜单"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-close-24px.svg" alt="关" /></a></td>
+            <td align="right"><a href="javascript:swmenu(0);" title="关闭设置菜单"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-close-24px.svg" alt="×" /></a></td>
             </tr>
             <tr>
             <td>线路</td>
@@ -192,11 +207,11 @@ function nyarukoLiveShortcode($attr, $content) {
         <td width="20">
             <a id="nyarukolive_btnplay" href="javascript:nyarukolive_playpausebtn();" title="播放/暂停"><img id="nyarukolive_btnplayi" class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-play_arrow-24px.svg" src2="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-play_arrow-24px.svg" src3="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-pause-24px.svg" /></a>
         </td>
-        <td width="80"><input name="textfield" class="w100" type="text" id="nyarukolive_danmunick" value="昵称" maxlength="20"></td>
-        <td><input name="textfield2" class="w100" type="text" id="nyarukolive_danmuchat" value="输入实时评论..." maxlength="100"></td>
+        <td width="80"><input name="nyarukolive_danmunick" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_danmunick" placeholder="昵称" value="" maxlength="20" readonly="readonly" onclick="swmenu(1,true);"></td>
+        <td><input name="nyarukolive_danmuchat" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_danmuchat" placeholder="输入实时评论（最多32个字）" value="" maxlength="32" oninput="cleartext(this,false,true);" onfocus="sendBarrageChk();"></td>
         <td width="80" align="right">
             <a id="nyarukolive_btndanmusent" href="javascript:;" title="发送弹幕"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-send-24px.svg" alt="发"/></a>
-            <a id="nyarukolive_btnsetting" href="javascript:swmenu();" title="播放器设置"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-settings-20px.svg" alt="设" /></a>
+            <a id="nyarukolive_btnsetting" href="javascript:swmenu(0,true);" title="播放器设置"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-settings-20px.svg" alt="设" /></a>
             <a id="nyarukolive_btnfullscreen" href="javascript:;" onclick="fullScreen();" title="全屏幕"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-fullscreen-24px.svg" alt="全" /></a>
         </td>
         </tr>

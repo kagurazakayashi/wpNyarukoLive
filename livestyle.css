@@ -82,6 +82,21 @@
     color: #FFF;
     cursor: pointer;
 }
+#nyarukolive_usermenu {
+    display: none;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 200px;
+    height: 270px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+#nyarukolive_usermenu td {
+    height: 50px;
+    width: 50%;
+}
 #nyarukolive_errorinfo {
     width: 80%;
     padding-top: 20px;
@@ -113,10 +128,15 @@
     vertical-align: middle;
     height: 30px;
 }
-#nyarukolive_danmuchat, #nyarukolive_danmunick {
+.nyarukolive_danmuinbox {
     background-color: #000;
     color: gray;
     border: none;
+}
+.nyarukolive_danmuinbox:focus {
+    background-color: #FFF;
+    color: #000;
+    border-bottom: 1px solid skyblue;
 }
 .nyarukolive_footbariconbtn {
     width: 20px !important;
