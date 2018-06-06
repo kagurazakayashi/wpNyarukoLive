@@ -1,6 +1,6 @@
 <?php
 /* 
-返回值：[<状态码>,<状态描述>]
+JSON返回值：{"code":<状态码>,"msg":<状态描述>}
 - 0：成功（新增）。
 - 1：成功（更新）。
 - -1：没有输入当前直播状态。
@@ -9,7 +9,8 @@
 */
 // ini_set('display_errors',1);
 // error_reporting(-1);
-header('Content-type: application/json');
+header('Content-Type: application/json; charset=utf-8');
+header('X-Powered-By: wpNyarukoLive');
 define("NYARUKOLIVE_ERROR", "[NYA-L+ERR]");
 include "../wp-config.php";
 nyalivealicb($table_prefix);
@@ -37,7 +38,7 @@ function nyalivealicb($table_prefix) {
         $kid = htmlentities($_GET["id"]);
         $kapp = htmlentities($_GET["app"]);
         $appname = htmlentities($_GET["appname"]);
-        $psql = "SELECT `liveid` FROM `".$table_prefix."live` WHERE (app='".$kapp."' and appname='".$appname."' and id='".$kid."');";
+        $psql = "SELECT `liveid` FROM `".$table_prefix."live_channels` WHERE (app='".$kapp."' and appname='".$appname."' and id='".$kid."');";
         $aid = nyalivedb($psql);
         if ($aid == NYARUKOLIVE_ERROR) die(echoerror(-2,"db error"));
         if (isset($aid[0])) {
@@ -68,12 +69,12 @@ function nyalivealicb($table_prefix) {
             $sqlkvsstrv = "`".$sqlkeys[$i]."`='".$sqlvals[$i]."'";
             array_push($sqlkvsstr,$sqlkvsstrv);
         }
-        $sql = "UPDATE `".$table_prefix."live` SET ".implode(",", $sqlkvsstr)." WHERE `".$table_prefix."live`.`liveid`=".$updateid.";";
+        $sql = "UPDATE `".$table_prefix."live_channels` SET ".implode(",", $sqlkvsstr)." WHERE `".$table_prefix."live_channels`.`liveid`=".$updateid.";";
         $dbupdmode = [1,"update ok"];
     } else {
         $sqlkeysstr = "(`".implode("`,`", $sqlkeys)."`)";
         $sqlvalsstr = "('".implode("','", $sqlvals)."')";
-        $sql = "INSERT INTO `".$table_prefix."live` ".$sqlkeysstr." VALUES ".$sqlvalsstr.";";
+        $sql = "INSERT INTO `".$table_prefix."live_channels` ".$sqlkeysstr." VALUES ".$sqlvalsstr.";";
         $dbupdmode = [0,"insert ok"];
     }
     if (nyalivedb($sql) == NYARUKOLIVE_ERROR) die(echoerror(2,"db error"));
@@ -95,7 +96,7 @@ function nyalivedb($sql) {
     }
 }
 function echoerror($status,$info) {
-    $jsonarr = [$status,$info];
+    $jsonarr = array('code' => $status, 'msg' => $info);
     return json_encode($jsonarr);
 }
 ?>

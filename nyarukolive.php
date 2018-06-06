@@ -34,6 +34,15 @@ function nyarukoLiveAdminlink($links){
     return $links;
 }
 add_filter('plugin_action_links_'.plugin_basename(__FILE__), 'nyarukoLiveAdminlink');
+function randomstring($length = 16) {
+    $chars = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890qwertyuiopasdfghjklzxcvbnm";
+    $chars = str_shuffle($chars);
+    $mstr = "";
+    for ( $i = 0; $i < $length; $i++ ) {
+        $mstr .= $chars[mt_rand(0, strlen($chars) - 1)];
+    }
+    return str_shuffle($chars);
+}
 function nyarukoLiveShortcode($attr, $content) {
     //0.AUTO 1FLV 2HLS 3HLS+
     $errcode = [0,"ok"];
@@ -73,7 +82,7 @@ function nyarukoLiveShortcode($attr, $content) {
     if (isset($attr["id"])) array_push($livedbarr,"(id='".htmlentities($attr["id"])."')");
     if (count($livedbarr) == 0) $errcode = [-2,"配置错误：缺少名称参数"];
     $dbinfos = [];
-    if ($errcode[0] == 0) $dbinfos = $wpdb->get_results("SELECT `liveid`,`action`,`cmode`,`ip` FROM `".$wpdb->prefix."live` WHERE ".implode(" AND ", $livedbarr)." ORDER BY liveid DESC;");
+    if ($errcode[0] == 0) $dbinfos = $wpdb->get_results("SELECT `liveid`,`action`,`cmode`,`ip` FROM `".$wpdb->prefix."live_channels` WHERE ".implode(" AND ", $livedbarr)." ORDER BY liveid DESC;");
     $info = [];
     if (count($dbinfos) > 0) {
         $dbinfo = $dbinfos[0];
@@ -91,7 +100,26 @@ function nyarukoLiveShortcode($attr, $content) {
     } else if ($errcode[0] == 0) {
         $errcode = [-3,"配置错误：直播尚未登记"];
     }
-    echo '<script>var nyarukolive_config={"pcode":'.$errcode[0].',"pinfo":"'.$errcode[1].'","liveid":'.$info["liveid"].',"pagetype":'.$pagetype.',"pageid":'.$livepageid.',"mode":'.$liveplayermode.',"pluginurl":"'.NYARUKOLIVE_PLUGIN_URL.'"';
+    $time = strval(time());
+    $timelen = strlen($time);
+    $token = $time.randomstring(128-$timelen);
+    $browsertoken = "";
+    $newbrowsertoken = false;
+    if (count($_COOKIE["nyarukolive_browsertoken"]) > 0) {
+        $browsertoken = $_COOKIE["nyarukolive_browsertoken"];
+    } else {
+        $browsertoken = $time.randomstring(64-$timelen);
+        $newbrowsertoken = true;
+        // setcookie("nyarukolive_browsertoken", $browsertoken, time()+31536000);
+    }
+    $dbinfos = $wpdb->get_results("SELECT `token` FROM `".$wpdb->prefix."live_audiences` WHERE `browsertoken`='".$browsertoken."';");
+    echo "SELECT `token` FROM `".$wpdb->prefix."live_audiences` WHERE `browsertoken`='".$browsertoken."';";
+    if (count($dbinfos) > 0) {
+        $wpdb->get_results("UPDATE `".$wpdb->prefix."live_audiences` SET `token`='".$token."', `time`=CURRENT_TIMESTAMP WHERE `".$wpdb->prefix."live_audiences`.`browsertoken`='".$browsertoken."';");
+    } else {
+        $wpdb->get_results("INSERT INTO `".$wpdb->prefix."live_audiences` (`token`, `browsertoken`, `type`, `time`) VALUES ('".$token."', '".$browsertoken."', '0', CURRENT_TIMESTAMP);");
+    }
+    echo '<script>var nyarukolive_config={"token":"'.$token.'","browsertoken":"'.$browsertoken.'","pcode":'.$errcode[0].',"pinfo":"'.$errcode[1].'","liveid":'.$info["liveid"].',"pagetype":'.$pagetype.',"pageid":'.$livepageid.',"mode":'.$liveplayermode.',"pluginurl":"'.NYARUKOLIVE_PLUGIN_URL.'"';
     foreach($attr as $k => $v){
         echo ',"'.$k.'":"'.$v.'"';
     }
@@ -208,9 +236,9 @@ function nyarukoLiveShortcode($attr, $content) {
             <a id="nyarukolive_btnplay" href="javascript:nyarukolive_playpausebtn();" title="播放/暂停"><img id="nyarukolive_btnplayi" class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-play_arrow-24px.svg" src2="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-play_arrow-24px.svg" src3="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-pause-24px.svg" /></a>
         </td>
         <td width="80"><input name="nyarukolive_danmunick" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_danmunick" placeholder="昵称" value="" maxlength="20" readonly="readonly" onclick="swmenu(1,true);"></td>
-        <td><input name="nyarukolive_danmuchat" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_danmuchat" placeholder="输入实时评论（最多32个字）" value="" maxlength="32" oninput="cleartext(this,false,true);" onfocus="sendBarrageChk();"></td>
+        <td><input name="nyarukolive_danmuchat" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_danmuchat" placeholder="输入实时评论（最多32个字）" value="" maxlength="32" oninput="cleartext(this,false,true);" onfocus="sendBulletCommentChk();"></td>
         <td width="80" align="right">
-            <a id="nyarukolive_btndanmusent" href="javascript:;" title="发送弹幕"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-send-24px.svg" alt="发"/></a>
+            <a id="nyarukolive_btndanmusent" href="javascript:sendBulletComment();" title="发送弹幕"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-send-24px.svg" alt="发"/></a>
             <a id="nyarukolive_btnsetting" href="javascript:swmenu(0,true);" title="播放器设置"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-settings-20px.svg" alt="设" /></a>
             <a id="nyarukolive_btnfullscreen" href="javascript:;" onclick="fullScreen();" title="全屏幕"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-fullscreen-24px.svg" alt="全" /></a>
         </td>

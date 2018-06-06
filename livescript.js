@@ -161,17 +161,17 @@ function saveguestname() {
     if (guestname == "" || guestmail == "") {
         alert("用户名和电子邮件均不能为空。");
     } else {
-        setCookie('guestname',guestname,365);
-        setCookie('guestmail',guestmail,365);
-        setCookie('guesturl',guesturl.replace(":", ")"),365);
+        setCookie('nyarukolive_guestname',guestname,365);
+        setCookie('nyarukolive_guestmail',guestmail,365);
+        setCookie('nyarukolive_guesturl',guesturl.replace(":", ")"),365);
     }
     document.getElementById("nyarukolive_danmunick").value = guestname;
     swmenu(1);
 }
 function loadguestname($isonlyload = false) {
-    var guestname = getCookie('guestname');
-    var guestmail = getCookie('guestmail');
-    var guesturl = getCookie('guesturl').replace(")", ":");
+    var guestname = getCookie('nyarukolive_guestname');
+    var guestmail = getCookie('nyarukolive_guestmail');
+    var guesturl = getCookie('nyarukolive_guesturl').replace(")", ":");
     if ($isonlyload) {
         return [guestname,guestmail,guesturl];
     }
@@ -181,7 +181,7 @@ function loadguestname($isonlyload = false) {
     document.getElementById("nyarukolive_dmuurl").value = guesturl;
     swmenu(1);
 }
-function sendBarrageChk() {
+function sendBulletCommentChk() {
     var guestinfos = loadguestname(true);
     var clearguestinfos = [];
     var isok = true;
@@ -194,8 +194,22 @@ function sendBarrageChk() {
         swmenu(1,true);
     }
 }
+function sendBulletComment() {
+    //id 弹幕序号DB	liveid 直播序号JS	name 昵称JS	email 邮件JS	url 主页JS	ip 发送IPphp	date 发送时间PHP	content 弹幕内容JS	style 弹幕样式JS	ua 浏览器UAPHP	wpuserid WP用户IDphp
+    //liveid 直播序号 name 昵称 email 邮件 url 主页 content 弹幕内容 style 弹幕样式
+    var guestinfo = loadguestname(true);
+    var liveid = nyarukolive_config["liveid"];
+    var name = guestinfo[0];
+    var email = guestinfo[1];
+    var url = guestinfo[2];
+    var danmuchat = document.getElementById("nyarukolive_danmuchat");
+    cleartext(danmuchat,false,true);
+    var content = danmuchat.value;
+    var style = "0:0";
+    
+}
 function cleartext(thistbox,isstring = false,usefullchar = false) {
-    var pattern = new RegExp("[`~!#$^&*()=|{}';',\\[]<>@:/.?~！#￥……&*（）——|{}【】‘；：”“'。，、？]");
+    var pattern = new RegExp("[`~!@#$^&*()=|{}':;'\",\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？%+_]");
     if (isstring) {
         if (thistbox == "") return thistbox;
         var svalue = thistbox;
@@ -207,12 +221,12 @@ function cleartext(thistbox,isstring = false,usefullchar = false) {
         var sid = thistbox.id;
         // var keychar = ;
         var rs = "";
-        var patterns = [new RegExp("[`~!#$^&*()=|{}';',\\[]<>?~！#￥……&*（）——|{}【】‘；：”“'。，、？]")];
+        var patterns = [new RegExp("[`~!#$^&*()=|{}';',\\[\\]<>?~！#￥……&*（）——|{}【】‘；：”“'。，、？]")];
         if (sid != "nyarukolive_dmumail") {
-            patterns.push(new RegExp("@."));
+            patterns.push(new RegExp("[@]"));
         }
         if (sid != "nyarukolive_dmuurl") {
-            patterns.push(new RegExp(":/."));
+            patterns.push(new RegExp("[:/]"));
         }
         for (var i = 0; i < svalue.length; i++) {
             var sub = svalue.substr(i, 1);
@@ -292,7 +306,14 @@ function removeWpNyarukoNPlayer() {
         // $(".nyarukoplayer").remove();
     }
 }
+function setbrowsertoken() {
+    var browsertoken = getCookie("nyarukolive_browsertoken");
+    if (browsertoken != nyarukolive_config["browsertoken"]) {
+        setCookie("nyarukolive_browsertoken",nyarukolive_config["browsertoken"],365);
+    }
+}
 function wpnyarukoliveinit() {
+    setbrowsertoken();
     if (typeof(nyarukolive_config) == "undefined") nyarukolive_error(1);
     nyarukolive_lconf = nyarukolive_loadconfig(nyarukolive_config);
     if (nyarukolive_lconf == 0) {
