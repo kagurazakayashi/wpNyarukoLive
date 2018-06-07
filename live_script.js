@@ -196,7 +196,7 @@ function sendBulletCommentChk() {
 }
 function sendBulletComment() {
     //id 弹幕序号DB	liveid 直播序号JS	name 昵称JS	email 邮件JS	url 主页JS	ip 发送IPphp	date 发送时间PHP	content 弹幕内容JS	style 弹幕样式JS	ua 浏览器UAPHP	wpuserid WP用户IDphp
-    //liveid 直播序号 name 昵称 email 邮件 url 主页 content 弹幕内容 style 弹幕样式
+    //liveid 直播序号 name 昵称 email 邮件 url 主页 content 弹幕内容 style 弹幕样式 token 会话ID
     var guestinfo = loadguestname(true);
     var liveid = nyarukolive_config["liveid"];
     var name = guestinfo[0];
@@ -206,7 +206,8 @@ function sendBulletComment() {
     cleartext(danmuchat,false,true);
     var content = danmuchat.value;
     var style = "0:0";
-    
+    var token = nyarukolive_config["token"];
+    //sent
 }
 function cleartext(thistbox,isstring = false,usefullchar = false) {
     var pattern = new RegExp("[`~!@#$^&*()=|{}':;'\",\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？%+_]");

@@ -15,6 +15,7 @@ Text Domain: wpNyarukoLive
 define("NYARUKOLIVE_PLUGIN_URL", plugin_dir_url( __FILE__ ));
 define("NYARUKOLIVE_FULL_DIR", plugin_dir_path( __FILE__ ));
 define("NYARUKOLIVE_TEXT_DOMAIN", "nyarukolive");
+define("NYARUKOLIVE_RANDOM_CHAR", "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
 include_once NYARUKOLIVE_FULL_DIR."options.php";
 include_once NYARUKOLIVE_FULL_DIR."api.php";
 nyarukoLiveAPI();
@@ -23,8 +24,8 @@ nyarukoLiveAPI();
 // }
 function nyarukoLiveHead() {
     $plugindir = plugins_url('',__FILE__);
-    echo '<link href="'.NYARUKOLIVE_PLUGIN_URL.'/style.css" rel="stylesheet">';
-    echo '<script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'/script.js"></script>';
+    echo '<link href="'.NYARUKOLIVE_PLUGIN_URL.'/options_style.css" rel="stylesheet">';
+    echo '<script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'/options_script.js"></script>';
     echo '<style>#wpNyarukoPanelLogo{background-image:url("'.NYARUKOLIVE_PLUGIN_URL.'/wpNyaruko.gif");}#wpNyarukoPanelLogo:hover{background-image:url("'.NYARUKOLIVE_PLUGIN_URL.'/wpNyaruko2.gif");}</style>';
 }
 add_action("admin_head","nyarukoLiveHead");
@@ -35,13 +36,11 @@ function nyarukoLiveAdminlink($links){
 }
 add_filter('plugin_action_links_'.plugin_basename(__FILE__), 'nyarukoLiveAdminlink');
 function randomstring($length = 16) {
-    $chars = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890qwertyuiopasdfghjklzxcvbnm";
-    $chars = str_shuffle($chars);
     $mstr = "";
     for ( $i = 0; $i < $length; $i++ ) {
-        $mstr .= $chars[mt_rand(0, strlen($chars) - 1)];
+        $mstr .= NYARUKOLIVE_RANDOM_CHAR[mt_rand(0, strlen(NYARUKOLIVE_RANDOM_CHAR) - 1)];
     }
-    return str_shuffle($chars);
+    return $mstr;
 }
 function nyarukoLiveShortcode($attr, $content) {
     //0.AUTO 1FLV 2HLS 3HLS+
@@ -68,7 +67,7 @@ function nyarukoLiveShortcode($attr, $content) {
         echo '<script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'lib/video.min.js"></script>';
         echo '<script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'lib/videojs-contrib-hls.js"></script>';
     }
-    echo '<link href="'.NYARUKOLIVE_PLUGIN_URL.'livestyle.css" rel="stylesheet">';
+    echo '<link href="'.NYARUKOLIVE_PLUGIN_URL.'live_style.css" rel="stylesheet">';
     $nyarukoLivePlayerCssLoaded = true;
     $pagetype = "1";
     if (isset($_GET["page_id"])) {
@@ -105,7 +104,7 @@ function nyarukoLiveShortcode($attr, $content) {
     $token = $time.randomstring(128-$timelen);
     $browsertoken = "";
     $newbrowsertoken = false;
-    if (count($_COOKIE["nyarukolive_browsertoken"]) > 0) {
+    if (isset($_COOKIE["nyarukolive_browsertoken"])) {
         $browsertoken = $_COOKIE["nyarukolive_browsertoken"];
     } else {
         $browsertoken = $time.randomstring(64-$timelen);
@@ -113,7 +112,6 @@ function nyarukoLiveShortcode($attr, $content) {
         // setcookie("nyarukolive_browsertoken", $browsertoken, time()+31536000);
     }
     $dbinfos = $wpdb->get_results("SELECT `token` FROM `".$wpdb->prefix."live_audiences` WHERE `browsertoken`='".$browsertoken."';");
-    echo "SELECT `token` FROM `".$wpdb->prefix."live_audiences` WHERE `browsertoken`='".$browsertoken."';";
     if (count($dbinfos) > 0) {
         $wpdb->get_results("UPDATE `".$wpdb->prefix."live_audiences` SET `token`='".$token."', `time`=CURRENT_TIMESTAMP WHERE `".$wpdb->prefix."live_audiences`.`browsertoken`='".$browsertoken."';");
     } else {
@@ -250,6 +248,6 @@ function nyarukoLiveShortcode($attr, $content) {
     } else {
         echo '<div id="nyarukolive_stopalert"><h1>&emsp;</h1><h1>暂时无法观看</h1><h2>'.$errcode[1].'</h2><h2>代码：'.$errcode[0].'</h2></div>';
     }
-    echo '</div><script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'livescript.js"></script>';
+    echo '</div><script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'live_script.js"></script>';
 }
 add_shortcode('nyarukolive', 'nyarukoLiveShortcode');

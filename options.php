@@ -12,8 +12,9 @@ function nyarukoliveGetOptions() {
 }
 //获得正在进行中的直播
 function nyarukoliveNowLive() {
-	global $wpdb;
-	$dbinfos = $wpdb->get_results("SELECT * FROM `".$wpdb->prefix."live`;");
+    global $wpdb;
+    $infos = [];
+    $dbinfos = $wpdb->get_results("SELECT * FROM `".$wpdb->prefix."live_channels` ORDER BY `time` DESC;");
 	$nonetext = "(未知)";
 	foreach ($dbinfos as $dbinfo) {
 		$info["liveid"] = isset($dbinfo->liveid) ? $dbinfo->liveid : $nonetext;
@@ -27,8 +28,7 @@ function nyarukoliveNowLive() {
 		$info["node"] = isset($dbinfo->node) ? $dbinfo->node : $nonetext;
 		$info["cmode"] = isset($dbinfo->cmode) ? $dbinfo->cmode : 0;
 		array_push($infos,$info);
-	}
-	$infos = array_reverse($infos);
+    }
 	foreach ($infos as $info) {
 		echo '<tr><th scope="row">'.$info["liveid"].'</th><td>';
 		if ($info["action"] == 0) {
@@ -128,7 +128,7 @@ function nyarukoliveOptionsPage() {
 			<th scope="col">应用</th>
 			<th scope="col">名称</th>
 			<th scope="col">推流IP</th>
-			<th scope="col">更新时间</th>
+			<th scope="col">回调时间↓</th>
 			<th scope="col">参数</th>
 			<th scope="col">播放控制</th>
 			<th scope="col">弹幕</th>
@@ -156,10 +156,11 @@ function wpNyarukoCModeGet($nyamode) {
 	if ($nyamode == "mglive" && isset($_GET["liveid"]) && isset($_GET["cmode"])) {
 		$liveid = intval($_GET["liveid"]);
 		$cmode = intval($_GET["cmode"]);
-		//UPDATE `racing_live` SET `cmode` = '1' WHERE `racing_live`.`liveid` = 16
-		$dbinfos = $wpdb->get_results("UPDATE `".$wpdb->prefix."live` SET `cmode`=".$cmode." WHERE `".$wpdb->prefix."live`.`liveid`=".$liveid.";");
+		$dbinfos = $wpdb->get_results("UPDATE `".$wpdb->prefix."live_channels` SET `cmode`=".$cmode." WHERE `".$wpdb->prefix."live_channels`.`liveid`=".$liveid.";");
 		$alertinfo = "将 ".$liveid." 号直播间播放状态设置为 ".$cmode;
-	}
-	echo "<script>window.location.href = 'tools.php?page=nyarukolive-options&info=".urlb64encode($alertinfo)."';</script>";
+    }
+    $tabid = "";
+    if (isset($_GET["tabid"])) $tabid = "#".$_GET["tabid"];
+	echo "<script>window.location.href = 'tools.php?page=nyarukolive-options&info=".urlb64encode($alertinfo).$tabid."';</script>";
 }
 ?>
