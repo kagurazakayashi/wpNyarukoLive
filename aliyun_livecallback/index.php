@@ -74,10 +74,10 @@ function nyalivealicb($table_prefix) {
     } else {
         $sqlkeysstr = "(`".implode("`,`", $sqlkeys)."`)";
         $sqlvalsstr = "('".implode("','", $sqlvals)."')";
-        $sql = "INSERT INTO `".$table_prefix."live_channels` ".$sqlkeysstr." VALUES ".$sqlvalsstr.";";
+        $dbcmd = "INSERT INTO `".$table_prefix."live_channels` ".$sqlkeysstr." VALUES ".$sqlvalsstr.";";
         $dbupdmode = [0,"insert ok"];
     }
-    if (nyalivedb($sql) == NYARUKOLIVE_ERROR) die(echoerror(2,"db error"));
+    if (nyalivedb($dbcmd) == NYARUKOLIVE_ERROR) die(echoerror(2,"db error"));
     echo echoerror($dbupdmode[0],$dbupdmode[1]);
 }
 function nyalivedb($sql) {

@@ -197,18 +197,22 @@ function sendBulletCommentChk() {
 function sendBulletComment() {
     //id 弹幕序号DB	liveid 直播序号JS	name 昵称JS	email 邮件JS	url 主页JS	ip 发送IPphp	date 发送时间PHP	content 弹幕内容JS	style 弹幕样式JS	ua 浏览器UAPHP	wpuserid WP用户IDphp
     //liveid 直播序号 name 昵称 email 邮件 url 主页 content 弹幕内容 style 弹幕样式 token 会话ID
-    var bulletcomment = [];
-    bulletcomment["guestinfo"] = loadguestname(true);
-    bulletcomment["liveid"] = nyarukolive_config["liveid"];
-    bulletcomment["name"] = guestinfo[0];
-    bulletcomment["email"] = guestinfo[1];
-    bulletcomment["url"] = guestinfo[2];
+    var guestinfo = loadguestname(true);
     var danmuchat = document.getElementById("nyarukolive_danmuchat");
     cleartext(danmuchat,false,true);
-    bulletcomment["content"] = danmuchat.value;
-    bulletcomment["style"] = "0:0";
-    bulletcomment["token"] = nyarukolive_config["token"];
-    //sent
+    var bulletcomment = {
+        "api":1,
+        "liveid":nyarukolive_config["liveid"],
+        "name":guestinfo[0],
+        "email":guestinfo[1],
+        "url":guestinfo[2],
+        "content":danmuchat.value,
+        "style":"0:0",
+        "token":nyarukolive_config["token"]
+    };
+    $.post(nyarukolive_config["api"],bulletcomment,function(result){
+        console.log(result);
+    });
 }
 function cleartext(thistbox,isstring = false,usefullchar = false) {
     var pattern = new RegExp("[`~!@#$^&*()=|{}':;'\",\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？%+_]");

@@ -17,8 +17,8 @@ define("NYARUKOLIVE_FULL_DIR", plugin_dir_path( __FILE__ ));
 define("NYARUKOLIVE_TEXT_DOMAIN", "nyarukolive");
 define("NYARUKOLIVE_RANDOM_CHAR", "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
 include_once NYARUKOLIVE_FULL_DIR."options.php";
-include_once NYARUKOLIVE_FULL_DIR."api.php";
-nyarukoLiveAPI();
+// include_once NYARUKOLIVE_FULL_DIR."api.php";
+// nyarukoLiveAPI();
 // function nyarukoLiveAlert() {
 //     echo "还未完成初始设定";
 // }
@@ -117,7 +117,7 @@ function nyarukoLiveShortcode($attr, $content) {
     } else {
         $wpdb->get_results("INSERT INTO `".$wpdb->prefix."live_audiences` (`token`, `browsertoken`, `type`, `time`) VALUES ('".$token."', '".$browsertoken."', '0', CURRENT_TIMESTAMP);");
     }
-    echo '<script>var nyarukolive_config={"token":"'.$token.'","browsertoken":"'.$browsertoken.'","pcode":'.$errcode[0].',"pinfo":"'.$errcode[1].'","liveid":'.$info["liveid"].',"pagetype":'.$pagetype.',"pageid":'.$livepageid.',"mode":'.$liveplayermode.',"pluginurl":"'.NYARUKOLIVE_PLUGIN_URL.'"';
+    echo '<script>var nyarukolive_config={"token":"'.$token.'","browsertoken":"'.$browsertoken.'","pcode":'.$errcode[0].',"pinfo":"'.$errcode[1].'","liveid":'.$info["liveid"].',"pagetype":'.$pagetype.',"pageid":'.$livepageid.',"mode":'.$liveplayermode.',"pluginurl":"'.NYARUKOLIVE_PLUGIN_URL.'","api":"'.WP_PLUGIN_URL.'/wpNyarukoLive/api.php"';
     foreach($attr as $k => $v){
         echo ',"'.$k.'":"'.$v.'"';
     }
