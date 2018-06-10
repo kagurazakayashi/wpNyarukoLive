@@ -183,7 +183,6 @@ function loadguestname($isonlyload = false) {
 }
 function sendBulletCommentChk() {
     var guestinfos = loadguestname(true);
-    var clearguestinfos = [];
     var isok = true;
     // for (var i = 0; i < guestinfos.length; i++) {
     //     if (guestinfos[i] != cleartext(guestinfos[i],true)) isok = false;
@@ -195,33 +194,70 @@ function sendBulletCommentChk() {
     }
 }
 function sendBulletComment() {
-    //id 弹幕序号DB	liveid 直播序号JS	name 昵称JS	email 邮件JS	url 主页JS	ip 发送IPphp	date 发送时间PHP	content 弹幕内容JS	style 弹幕样式JS	ua 浏览器UAPHP	wpuserid WP用户IDphp
-    //liveid 直播序号 name 昵称 email 邮件 url 主页 content 弹幕内容 style 弹幕样式 token 会话ID
     var guestinfo = loadguestname(true);
     var danmuchat = document.getElementById("nyarukolive_danmuchat");
-    cleartext(danmuchat,false,true);
+    var content = danmuchat.value;
+    if (!cleartext(danmuchat,false,true,true)) {
+        alert("输入中包括不支持的符号，在输入时请保证文字不变成红色。");
+        return;
+    }
+    if (content == "") return;
     var bulletcomment = {
         "api":1,
         "liveid":nyarukolive_config["liveid"],
         "name":guestinfo[0],
         "email":guestinfo[1],
         "url":guestinfo[2],
-        "content":danmuchat.value,
+        "content":content,
         "style":"0:0",
-        "token":nyarukolive_config["token"]
+        "token":nyarukolive_config["token"],
+        "browsertoken":nyarukolive_config["browsertoken"]
     };
     $.post(nyarukolive_config["api"],bulletcomment,function(result){
-        console.log(result);
+        //content email msg name style url wpuserid
+        if (result.length > 0) {
+            var rjson = $.parseJSON(result);
+            if (rjson) {
+                if (rjson["code"] == 0) {
+                    alert("弹幕发送成功。");
+                    danmuchat.value = "";
+                } else {
+                    sendBulletCommentFail(rjson.msg);
+                }
+            } else {
+                sendBulletCommentFail("");
+            }
+        } else {
+            sendBulletCommentFail("");
+        }
     });
 }
-function cleartext(thistbox,isstring = false,usefullchar = false) {
-    var pattern = new RegExp("[`~!@#$^&*()=|{}':;'\",\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？%+_]");
+function sendBulletCommentFail(errinfo) {
+    var einfo = "弹幕发送失败。";
+    if (errinfo != "") {
+        einfo += errinfo;
+    }
+    alert(einfo);
+}
+function cleartext(thistbox,isstring = false,usefullchar = false,norevalue=false) {
+    //new RegExp("[`~!@#$^&*()=|{}':;'\",\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？%+_]")
+    var pattern = new RegExp("[`~!@#^&*()|{}':;'\"\\[\\]<>/]");
     if (isstring) {
         if (thistbox == "") return thistbox;
         var svalue = thistbox;
         return svalue.replace(pattern, '');
     } else if (usefullchar && !isstring) {
-        thistbox.value = thistbox.value.replace(pattern, '');
+        if (norevalue) {
+            if (thistbox.value != thistbox.value.replace(pattern, '')) {
+                thistbox.style.color = '#F00';
+                return false;
+            } else {
+                thistbox.style.color = '';
+                return true;
+            }
+        } else {
+            thistbox.value = thistbox.value.replace(pattern, '');
+        }
     } else {
         var svalue = thistbox.value;
         var sid = thistbox.id;

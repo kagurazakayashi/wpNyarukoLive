@@ -61,7 +61,7 @@ function nyalivealicb($table_prefix) {
         array_push($sqlkeys,"time");
         array_push($sqlvals,date('Y-m-d H:i:s', $_GET["time"]));
     }
-    $sql = "";
+    $dbcmd = "";
     $dbupdmode = [];
     if ($updateid > -1) {
         $sqlkvsstr = [];
@@ -69,7 +69,7 @@ function nyalivealicb($table_prefix) {
             $sqlkvsstrv = "`".$sqlkeys[$i]."`='".$sqlvals[$i]."'";
             array_push($sqlkvsstr,$sqlkvsstrv);
         }
-        $sql = "UPDATE `".$table_prefix."live_channels` SET ".implode(",", $sqlkvsstr)." WHERE `".$table_prefix."live_channels`.`liveid`=".$updateid.";";
+        $dbcmd = "UPDATE `".$table_prefix."live_channels` SET ".implode(",", $sqlkvsstr)." WHERE `".$table_prefix."live_channels`.`liveid`=".$updateid.";";
         $dbupdmode = [1,"update ok"];
     } else {
         $sqlkeysstr = "(`".implode("`,`", $sqlkeys)."`)";
@@ -83,7 +83,7 @@ function nyalivealicb($table_prefix) {
 function nyalivedb($sql) {
     $con = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
     $con->query('set names utf8;');
-    if($result = $con->query($sql)){
+    if ($result = $con->query($sql)) {
         $row = "";
         if (!is_bool($result)) {
             $row = $result->fetch_array();
@@ -91,9 +91,10 @@ function nyalivedb($sql) {
         // if (is_array($row))
         // echo "[RESULT]".print_r($row);
         return $row;
-    }else{
+    } else {
         return NYARUKOLIVE_ERROR;
     }
+    $con->close();
 }
 function echoerror($status,$info) {
     $jsonarr = array('code' => $status, 'msg' => $info);
