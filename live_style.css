@@ -144,6 +144,9 @@
     padding: 0 !important;
     margin: 0 !important;
 }
+#nyarukolive_btndanmusentwait {
+    display: none;
+}
 .w100 {
     width: 100%;
 }

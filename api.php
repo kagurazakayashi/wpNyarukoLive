@@ -1,12 +1,14 @@
 <?php
 include "../../../wp-config.php";
 define("NYARUKOLIVE_ERROR", "[NYA-L+ERR]");
+date_default_timezone_set('PRC');
+// header('Content-Type: text/plain; charset=utf-8');
+header('Content-Type: application/json; charset=utf-8');
+header('X-Powered-By: wpNyarukoLive');
 nyarukoLiveAPI($table_prefix);
 // api: 1=发送弹幕
 function nyarukoLiveAPI($table_prefix) {
     if (isset($_POST["api"])) {
-        header('Content-Type: application/json; charset=utf-8');
-        header('X-Powered-By: wpNyarukoLive');
         $api = intval($_POST["api"]);
         $array = null;
         switch ($api) {
@@ -37,31 +39,31 @@ function nyarukoLiveAPISendBarrage($table_prefix) {
     }
     if (isset($_POST["name"]) && strlen($_POST["name"]) > 0 && mb_strlen($_POST["name"],'utf8') <= 16) {
         $bulletcomment["name"] = htmlentities($_POST["name"]);
-        $userinfo["name"] = $bulletcomment["name"];
+        $userinfo["name"] = $_POST["name"];
     } else {
         return showerror(array('code' => -3, 'msg' => '用户名不符合要求'));
     }
     if (isset($_POST["email"]) && strlen($_POST["email"]) > 0 && strlen($_POST["email"]) <= 32) {
         $bulletcomment["email"] = htmlentities($_POST["email"]);
-        $userinfo["email"] = $bulletcomment["email"];
+        $userinfo["email"] = $_POST["email"];
     } else {
         return showerror(array('code' => -4, 'msg' => '电子邮件输入不符合要求'));
     }
     if (isset($_POST["url"]) && strlen($_POST["url"]) > 0 && strlen($_POST["url"]) <= 64) {
         $bulletcomment["url"] = htmlentities($_POST["url"]);
-        $userinfo["url"] = $bulletcomment["url"];
+        $userinfo["url"] = $_POST["url"];
     } else {
         return showerror(array('code' => -5, 'msg' => '个人网址输入不符合要求'));
     }
     if (isset($_POST["content"]) && strlen($_POST["content"]) > 0 && mb_strlen($_POST["content"],'utf8') <= 32) {
         $bulletcomment["content"] = htmlentities($_POST["content"]);
-        $userinfo["content"] = $bulletcomment["content"];
+        $userinfo["content"] = $_POST["content"];
     } else {
         return showerror(array('code' => -6, 'msg' => '弹幕输入不符合要求'));
     }
     if (isset($_POST["style"]) && strlen($_POST["style"]) > 0 && strlen($_POST["style"]) < 16) {
         $bulletcomment["style"] = htmlentities($_POST["style"]);
-        $userinfo["style"] = $bulletcomment["style"];
+        $userinfo["style"] = $_POST["style"];
     } else {
         return showerror(array('code' => -7, 'msg' => 'style 配置错误'));
     }
@@ -75,10 +77,14 @@ function nyarukoLiveAPISendBarrage($table_prefix) {
     } else {
         return showerror(array('code' => -9, 'msg' => 'browsertoken 配置错误'));
     }
-    $tokenvifdbcmd = "SELECT `type`,`time` FROM `racing_live_audiences` WHERE (`token`='".$bulletcomment["token"]."') AND (`browsertoken`='".$bulletcomment["browsertoken"]."') AND (`type`='0') order by time desc;";
+    $tokenvifdbcmd = "SELECT `type`,`time`,`usetime` FROM `racing_live_audiences` WHERE (`token`='".$bulletcomment["token"]."') AND (`browsertoken`='".$bulletcomment["browsertoken"]."') AND (`type`='0') order by time desc;";
     $tokenvif = nyalivedb($tokenvifdbcmd);
     if ($tokenvif == NYARUKOLIVE_ERROR || count($tokenvif) < 4) {
         return showerror(array('code' => -10, 'msg' => 'token 验证失败'));
+    }
+    $senttime = time() - strtotime($tokenvif["usetime"]);
+    if ($senttime < 5) {
+        return showerror(array('code' => -11, 'msg' => '发送不宜频繁，过几秒再试。'));
     }
     // ip 发送IPphp ua 浏览器UAPHP wpuserid WP用户IDphp
     // $current_user = wp_get_current_user();
@@ -102,7 +108,11 @@ function nyarukoLiveAPISendBarrage($table_prefix) {
     if (nyalivedb($dbcmd) == NYARUKOLIVE_ERROR) {
         return showerror(array('code' => -100, 'msg' => '数据库连接失败。'));
     }
-    $jsonarr = array('code' => 0, 'msg' => "提交成功。");
+    $dbcmd = "UPDATE `".$table_prefix."live_audiences` SET `usetime` = CURRENT_TIMESTAMP WHERE `".$table_prefix."live_audiences`.`token` = '".$bulletcomment["token"]."';";
+    if (nyalivedb($dbcmd) == NYARUKOLIVE_ERROR) {
+        return showerror(array('code' => -100, 'msg' => '数据库连接失败。'));
+    }
+    $jsonarr = array('code' => 0, 'msg' => "弹幕发送成功。");
     $returnarr = array_merge($jsonarr,$userinfo);
     return json_encode($returnarr);
 }
@@ -118,12 +128,14 @@ function nyalivedb($sql) {
         // echo "[RESULT]".print_r($row);
         return $row;
     }else{
+        // echo mysqli_error($con);
         return NYARUKOLIVE_ERROR;
     }
     $con->close();
 }
 function showerror($errinfo) {
     // header('HTTP/1.1 403 Forbidden');
+    header('Content-Type: application/json; charset=utf-8');
     die(json_encode($errinfo));
 }
 function getip() {

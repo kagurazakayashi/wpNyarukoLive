@@ -3,6 +3,10 @@ var videosrc = document.getElementById('nyarukolive_videosrc');
 var pauseboxi = document.getElementById('nyarukolive_playbtn');
 var pauseboxi2 = document.getElementById('nyarukolive_btnplayi');
 var nyarukolivediv = document.getElementById('nyarukolive');
+var sendbtn = document.getElementById('nyarukolive_sendbtn');
+var sendwaittimer = document.getElementById('nyarukolive_sendbtn');
+var btndanmusentwait = document.getElementById('nyarukolive_btndanmusentwait');
+var btndanmusent = document.getElementById('nyarukolive_btndanmusent');
 var player = null;
 var ready = false;
 var playing = false;
@@ -121,6 +125,16 @@ function chkhttps() {
     return true;
 }
 function updatetime() {
+    if (btndanmusent.style.display == "none") {
+        var newsec = parseInt(btndanmusentwait.innerText) - 1;
+        if (newsec <= 0) {
+            btndanmusentwait.innerText = "5 "; //发送不宜频繁
+            btndanmusentwait.style.display = "none";
+            btndanmusent.style.display = "inline-block";
+        } else {
+            btndanmusentwait.innerText = newsec+" ";
+        }
+    }
     var dt = new Date();
     var localtimestr = (updatetimezero(dt.getHours()) + ":" + updatetimezero(dt.getMinutes()) + ":" + updatetimezero(dt.getSeconds()));
     if (document.getElementById('nyarukolive_ltime')) document.getElementById('nyarukolive_ltime').innerText = localtimestr;
@@ -201,7 +215,14 @@ function sendBulletComment() {
         alert("输入中包括不支持的符号，在输入时请保证文字不变成红色。");
         return;
     }
-    if (content == "") return;
+    if (content == "") {
+        console.log("弹幕内容不能为空");
+        return;
+    }
+    if (btndanmusent.style.display == "none") {
+        console.log("发送按钮冷却中");
+        return;
+    }
     var bulletcomment = {
         "api":1,
         "liveid":nyarukolive_config["liveid"],
@@ -214,15 +235,21 @@ function sendBulletComment() {
         "browsertoken":nyarukolive_config["browsertoken"]
     };
     $.post(nyarukolive_config["api"],bulletcomment,function(result){
-        //content email msg name style url wpuserid
-        if (result.length > 0) {
-            var rjson = $.parseJSON(result);
-            if (rjson) {
-                if (rjson["code"] == 0) {
-                    alert("弹幕发送成功。");
+        if (result && result != "") {
+            var nrjson = null;
+            if (typeof(result) == "object") {
+                nrjson = result;
+            } else {
+                nrjson = $.parseJSON(result);
+            }
+            var jcode = nrjson.code;
+            var jmsg = nrjson.msg;
+            if (nrjson && typeof(nrjson) == "object") {
+                if (jcode == 0) {
+                    alert(jmsg);
                     danmuchat.value = "";
                 } else {
-                    sendBulletCommentFail(rjson.msg);
+                    sendBulletCommentFail(jmsg);
                 }
             } else {
                 sendBulletCommentFail("");
@@ -231,6 +258,9 @@ function sendBulletComment() {
             sendBulletCommentFail("");
         }
     });
+    btndanmusent.style.display = "none";
+    btndanmusentwait.innerText = "5 ";
+    btndanmusentwait.style.display = "inline-block";
 }
 function sendBulletCommentFail(errinfo) {
     var einfo = "弹幕发送失败。";
