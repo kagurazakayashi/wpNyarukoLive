@@ -35,7 +35,7 @@ function nyarukoLiveAPI($table_prefix) {
 }
 function nyarukoLiveAPIGetStatus($table_prefix) {
     $gstatus = [];
-    $statinfo = [];
+    $statinfo = array('code' => 0, 'msg' => 'status');
     if (isset($_POST["liveid"])) {
         $gstatus["liveid"] = intval($_POST["liveid"]);
         $statinfo["liveid"] = $gstatus["liveid"];
@@ -81,7 +81,7 @@ function nyarukoLiveAPIGetStatus($table_prefix) {
     //取弹幕
     $statinfo["blockbullet"] = 0;
     if (isset($_POST["blockbullet"])) $statinfo["blockbullet"] = intval($_POST["blockbullet"]);
-    if ($statinfo["blockbullet"] == 0) {
+    if ($statinfo["blockbullet"] == 0 && $statinfo["isplaying"] > 0) {
         $statinfo["oldbarrageid"] = 0;
         if (isset($_POST["oldbarrageid"])) {
             $statinfo["oldbarrageid"] = intval($_POST["oldbarrageid"]);
@@ -97,10 +97,16 @@ function nyarukoLiveAPIGetStatus($table_prefix) {
                 $statinfo["limit"] = $gstatuslimit;
             }
         }
-        $barragecmd = "SELECT `id`,`name`,`email`,`url`,`date`,`content`,`style` FROM `".$table_prefix."live_commenting` WHERE (`liveid`=".$statinfo["liveid"].") AND (`id`>".$statinfo["oldbarrageid"].") AND (`date`>=DATE_SUB(NOW(),INTERVAL ".$statinfo["frequency"]." SECOND)) ORDER BY `date` LIMIT ".$statinfo["limit"].";";
+        $statinfo["email"] = "";
+        if (isset($_POST["email"])) {
+            $statinfo["email"] = htmlentities($_POST["email"]);
+        } else {
+            return showerror(array('code' => -14, 'msg' => '缺少弹幕发送者邮箱。'));
+        }
+        $barragecmd = "SELECT `id`,`name`,`email`,`url`,`date`,`content`,`style` FROM `".$table_prefix."live_commenting` WHERE (`liveid`=".$statinfo["liveid"].") AND (`id`>".$statinfo["oldbarrageid"].") AND (`email`<>'".$statinfo["email"]."') AND (`date`>=DATE_SUB(NOW(),INTERVAL ".$statinfo["frequency"]." SECOND)) ORDER BY `date` LIMIT ".$statinfo["limit"].";";
         $barrages = nyalivedb($barragecmd,true);
         if ($barrages == NYARUKOLIVE_ERROR) {
-            return showerror(array('code' => -14, 'msg' => '获取弹幕失败。'));
+            return showerror(array('code' => -15, 'msg' => '获取弹幕失败。'));
         }
         $statinfo["barrages"] = $barrages;
     }
@@ -126,11 +132,11 @@ function nyarukoLiveAPISendBarrage($table_prefix) {
     } else {
         return showerror(array('code' => -4, 'msg' => '电子邮件输入不符合要求'));
     }
-    if (isset($_POST["url"]) && strlen($_POST["url"]) > 0 && strlen($_POST["url"]) <= 64) {
+    if (isset($_POST["url"]) && strlen($_POST["url"]) >= 0 && strlen($_POST["url"]) <= 64) {
         $bulletcomment["url"] = htmlentities($_POST["url"]);
         $userinfo["url"] = $_POST["url"];
     } else {
-        return showerror(array('code' => -5, 'msg' => '个人网址输入不符合要求'));
+        return showerror(array('code' => -5, 'msg' => '个人网址输入不符合要求'.strlen($_POST["url"])));
     }
     if (isset($_POST["content"]) && strlen($_POST["content"]) > 0 && mb_strlen($_POST["content"],'utf8') <= 32) {
         $bulletcomment["content"] = htmlentities($_POST["content"]);
@@ -211,7 +217,7 @@ function nyalivedb($sql,$multi=false) {
         }
         return $row;
     }else{
-        return showerror(array('code' => -999, 'msg' => mysqli_error($con)));
+        // return showerror(array('code' => -999, 'msg' => mysqli_error($con)));
         return NYARUKOLIVE_ERROR;
     }
     $con->close();

@@ -51,6 +51,19 @@
     user-select: none;
     cursor: pointer;
 }
+.nyarukolive_danmu {
+    position: absolute;
+    display:inline-block;
+    color: #fff;
+    width: auto;
+    float: left;
+    white-space: nowrap;
+    font-size: 15pt;
+    top: 10px;
+}
+.nyarukolive_selfdanmu {
+    border-bottom: 1px solid #fff;
+}
 #nyarukolive_playbtn {
     position: absolute;
     width: 64px;
@@ -137,6 +150,23 @@
     background-color: #FFF;
     color: #000;
     border-bottom: 1px solid skyblue;
+}
+.red {
+    color: #F00;
+}
+#nyarukolive_alertbox {
+    position: absolute;
+    top: 40%;
+    height: auto;
+    width: 100%;
+    text-align: center;
+}
+#nyarukolive_alert {
+    display: inline-block;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #FF0;
+    padding: 20px;
+    border-radius: 10px;
 }
 .nyarukolive_footbariconbtn {
     width: 20px !important;

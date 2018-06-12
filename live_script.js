@@ -16,8 +16,18 @@ var nyarukolive_hls = "";
 var nyarukolive_protocol = "";
 var nyarukolive_timezone = 10000;
 var isfullScreen = false;
+var nyarukolive_barragecache = [];
+var nyarukolive_updatebarragespeed = 300;
+var nyarukolive_updatestatusspeed = 5000;
 var nyarukolive_oldbarrageid = 0;
 var nyarukolive_update_frequency = 5;
+var nyarukolive_dmnum = 0;
+var nyarukolive_dmW = 0;
+var nyarukolive_dmH = 26;//防错弹幕初始高，根据字号，字体修改
+var nyarukolive_dmTop = 10;//弹幕初始top
+var nyarukolive_dmspacing = 5;//弹幕行距
+var nyarukolive_dmObj = [];
+var nyarukolive_dmtime = 5000;//弹幕速度
 function nyarukolive_loadconfig(config) {
     if (config["pcode"] && config["pinfo"]) {
         console.log("wpNyarukoLive Status", config["pcode"], config["pinfo"]);
@@ -126,6 +136,17 @@ function chkhttps() {
     }
     return true;
 }
+function nyarukolive_showalert(text) {
+    if ($("#nyarukolive_alert").length > 0) {
+        $("#nyarukolive_alert").stop();
+        $("#nyarukolive_alert").remove();
+    }
+    var nyarukolive_alertbox = document.getElementById("nyarukolive_alertbox");
+    nyarukolive_alertbox.innerHTML = '<div id="nyarukolive_alert">'+text+'</div>';
+    $("#nyarukolive_alert").fadeOut(3000,function() {
+        $("#nyarukolive_alert").remove();
+    });
+}
 function updatetime() {
     if (btndanmusent.style.display == "none") {
         var newsec = parseInt(btndanmusentwait.innerText) - 1;
@@ -175,7 +196,7 @@ function saveguestname() {
     var guestmail = document.getElementById("nyarukolive_dmumail").value;
     var guesturl = document.getElementById("nyarukolive_dmuurl").value;
     if (guestname == "" || guestmail == "") {
-        alert("用户名和电子邮件均不能为空。");
+        nyarukolive_showalert("用户名和电子邮件均不能为空。");
     } else {
         setCookie('nyarukolive_guestname',guestname,365);
         setCookie('nyarukolive_guestmail',guestmail,365);
@@ -206,6 +227,7 @@ function sendBulletCommentChk() {
     if (guestinfos[0] == "" || guestinfos[1] == "") isok = false;
     if (!isok) {
         document.getElementById("nyarukolive_danmuchat").blur();
+        nyarukolive_showalert("请先输入用户信息，点对勾保存");
         swmenu(1,true);
     }
 }
@@ -213,38 +235,63 @@ function changemodebtn() {
 
 }
 function getStatus() {
-    console.log("getStatus...");
-    //nyarukolive_update_frequency
+    var guestinfo = loadguestname(true);
     var gstatus = {
         "api":2,
         "liveid":nyarukolive_config["liveid"],
         "blockbullet":document.getElementById("nyarukolive_blockbullet").value,
         "oldbarrageid":nyarukolive_oldbarrageid,
-        "frequency":50000000,
-        "limit":10,
+        "frequency":nyarukolive_update_frequency,
+        "limit":50,
         "token":nyarukolive_config["token"],
+        "email":guestinfo[1],
         "browsertoken":nyarukolive_config["browsertoken"]
     };
     $.post(nyarukolive_config["api"],gstatus,function(result){
-        console.log(result);
         if (result && result != "") {
+            var dmjson = null;
+            if (typeof(result) == "object") {
+                dmjson = result;
+            } else {
+                dmjson = $.parseJSON(result);
+            }
+            if (dmjson.code == 0 && dmjson.isplaying > 0 && dmjson.liveid == nyarukolive_config["liveid"]) {
+                dmjson.barrages.forEach(nowdm => {
+                    var nowbarrageid = parseInt(nowdm[0]);
+                    if (nowbarrageid > nyarukolive_oldbarrageid) {
+                        nyarukolive_oldbarrageid = nowbarrageid;
+                    }
+                });
+                nyarukolive_barragecache = dmjson.barrages;
+            }
         }
     });
 }
-function sendBulletComment() {
+function updatestatus() {
+    if (nyarukolive_barragecache.length > 0) {
+        nyarukolive_sendDanMu(nyarukolive_barragecache[0][5]);
+        nyarukolive_barragecache.splice(0,1);
+    }
+}
+function sendBulletComment(iskey=false) {
+    if (iskey) {
+        if(event.keyCode != 13){
+            return;
+        }
+    }
     var guestinfo = loadguestname(true);
     var danmuchat = document.getElementById("nyarukolive_danmuchat");
     var content = danmuchat.value;
     if (!cleartext(danmuchat,false,true,true)) {
-        alert("输入中包括不支持的符号，在输入时请保证文字不变成红色。");
+        nyarukolive_showalert("输入中包括不支持的符号");
         return;
     }
     if (content == "") {
-        console.log("弹幕内容不能为空");
+        nyarukolive_showalert("弹幕内容不能为空");
         return;
     }
     if (btndanmusent.style.display == "none") {
-        console.log("发送按钮冷却中");
+        nyarukolive_showalert("发送太频繁了，休息一下");
         return;
     }
     var bulletcomment = {
@@ -270,7 +317,8 @@ function sendBulletComment() {
             var jmsg = nrjson.msg;
             if (nrjson && typeof(nrjson) == "object") {
                 if (jcode == 0) {
-                    alert(jmsg);
+                    //nyarukolive_showalert(jmsg); //OK
+                    nyarukolive_sendDanMu(nrjson.content,true);
                     danmuchat.value = "";
                 } else {
                     sendBulletCommentFail(jmsg);
@@ -291,7 +339,7 @@ function sendBulletCommentFail(errinfo) {
     if (errinfo != "") {
         einfo += errinfo;
     }
-    alert(einfo);
+    nyarukolive_showalert(einfo);
 }
 function cleartext(thistbox,isstring = false,usefullchar = false,norevalue=false) {
     //new RegExp("[`~!@#$^&*()=|{}':;'\",\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？%+_]")
@@ -416,7 +464,11 @@ function wpnyarukoliveinit() {
         if (chkhttps()) {
             nyarukolive_selectmode(nyarukolive_playermode);
             updatetime();
-            setInterval("updatetime()","1000");
+            setInterval("updatetime()",1000);
+            updatestatus();
+            setInterval("updatestatus()",nyarukolive_updatebarragespeed);
+            //getStatus();
+            setInterval("getStatus()",nyarukolive_updatestatusspeed);
         }
     } else if (nyarukolive_lconf != 1) {
         nyarukolive_error(nyarukolive_lconf);
@@ -432,4 +484,61 @@ if (typeof(yashitheme) != "undefined" && yashitheme == "wpnyarukof") {
     }
 } else {
     wpnyarukoliveinit();
+}
+//弹幕
+Array.prototype.remove = function(val) {
+	var index = this.indexOf(val);
+	if (index > -1) {
+		this.splice(index, 1);
+	}
+};
+function nyarukolive_sortNumber(a,b) 
+{
+	return a - b;
+}
+function nyarukolive_sendDanMu(textval,selfsend=false) {
+	var backW = $("#nyarukolive_danmubox").width();
+	var dmid = 'dm' + nyarukolive_dmnum++;
+    var str = textval;
+    var dmT = nyarukolive_dmTop;
+    var dmTarr = [];
+    if(nyarukolive_dmObj.length > 0){
+        nyarukolive_dmObj.forEach(function(obj,i){
+            var isif = backW - obj.position().left;
+            // console.log($(this).position().left,backW,isif,nyarukolive_dmW);
+            if(isif < (obj.width()*2)){//控制同行两弹幕的间距
+                dmTarr.push(obj.position().top);
+            }else{
+                nyarukolive_dmObj.remove(obj);
+            }
+        });
+    }
+    // console.log('-----------------');
+    dmTarr.sort(nyarukolive_sortNumber);
+    // console.log(dmTarr);
+    if(dmTarr.length > 0){
+        dmTarr.forEach(function(obi,i){
+            if(obi == dmT){
+                dmT += nyarukolive_dmspacing + nyarukolive_dmH;
+            }
+        });
+    }
+    var addnewclass = 'span';
+    if(selfsend){
+        addnewclass += ' nyarukolive_selfdanmu'
+    }
+    $("<span class='nyarukolive_danmu' id='"+dmid+"'></span>").appendTo("#nyarukolive_danmubox").text(str).addClass(addnewclass).siblings().removeClass("span");
+    nyarukolive_dmObj.push($("#"+dmid));
+    nyarukolive_dmW = $("#"+dmid).width();
+    nyarukolive_dmH = $("#"+dmid).height()
+    $("#"+dmid).css({left: backW+'px'});
+    $("#"+dmid).css({top: dmT+'px'});
+    if($("#"+dmid) > backW){
+        $("#"+dmid).css({left: backW+'px'});
+    }
+    $("#"+dmid).css({top: dmT+'px'});
+    $('.nyarukolive_danmu').animate({left:-nyarukolive_dmW},nyarukolive_dmtime,'linear',function(){
+        $(this).remove();
+        nyarukolive_dmObj.remove($(this));
+    });
 }

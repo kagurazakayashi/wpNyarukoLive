@@ -165,7 +165,7 @@ function nyarukoLiveShortcode($attr, $content) {
         <video id="nyarukolive_video" class="video-js" x-webkit-airplay="allow" poster="" webkit-playsinline playsinline x5-video-player-type="h5" x5-video-player-fullscreen="true" preload="auto" style="width:100%;height:100%;position:relative;">
         <source id="nyarukolive_videosrc" src="" type="application/x-mpegURL">
         </video>
-        <div id="nyarukolive_danmubox">弹幕预留位置</div>
+        <div id="nyarukolive_danmubox"></div>
         <div id="nyarukolive_pausebox" onclick="nyarukolive_playpausebtn();">
             <img id="nyarukolive_playbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline_play_circle_outline_white_48dp.png" alt="点击播放" />
         </div>
@@ -226,6 +226,7 @@ function nyarukoLiveShortcode($attr, $content) {
             </tr>
         </tbody>
         </table>
+        <div id="nyarukolive_alertbox"></div>
     </div>
     <table id="nyarukolive_footbar" border="0">
     <tbody>
@@ -234,7 +235,7 @@ function nyarukoLiveShortcode($attr, $content) {
             <a id="nyarukolive_btnplay" href="javascript:nyarukolive_playpausebtn();" title="播放/暂停"><img id="nyarukolive_btnplayi" class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-play_arrow-24px.svg" src2="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-play_arrow-24px.svg" src3="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-pause-24px.svg" /></a>
         </td>
         <td width="80"><input name="nyarukolive_danmunick" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_danmunick" placeholder="昵称" value="" maxlength="20" readonly="readonly" onclick="swmenu(1,true);"></td>
-        <td><input name="nyarukolive_danmuchat" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_danmuchat" placeholder="输入实时评论（最多32个字）" value="" maxlength="32" oninput="cleartext(this,false,true,true);" onfocus="sendBulletCommentChk();"></td>
+        <td><input name="nyarukolive_danmuchat" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_danmuchat" placeholder="输入实时评论（最多32个字）" value="" maxlength="32" oninput="cleartext(this,false,true,true);" onfocus="sendBulletCommentChk();" onkeyup="sendBulletComment(true);"></td>
         <td width="80" align="right">
             <span id="nyarukolive_btndanmusentwait">5</span>
             <a id="nyarukolive_btndanmusent" href="javascript:sendBulletComment();" title="发送弹幕"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-send-24px.svg" alt="发"/></a>
