@@ -33,7 +33,7 @@ function nyarukoliveNowLive() {
 		echo '<tr><th scope="row">'.$info["liveid"].'</th><td>';
 		if ($info["action"] == 0) {
 			echo '已停播';
-		} else if ($info["action"] == 0) {
+		} else if ($info["action"] == 1) {
 			echo '推流中';
 		}
 		if ($info["cmode"] == 1) {

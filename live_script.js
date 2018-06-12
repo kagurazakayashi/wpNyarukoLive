@@ -16,6 +16,8 @@ var nyarukolive_hls = "";
 var nyarukolive_protocol = "";
 var nyarukolive_timezone = 10000;
 var isfullScreen = false;
+var nyarukolive_oldbarrageid = 0;
+var nyarukolive_update_frequency = 5;
 function nyarukolive_loadconfig(config) {
     if (config["pcode"] && config["pinfo"]) {
         console.log("wpNyarukoLive Status", config["pcode"], config["pinfo"]);
@@ -128,7 +130,7 @@ function updatetime() {
     if (btndanmusent.style.display == "none") {
         var newsec = parseInt(btndanmusentwait.innerText) - 1;
         if (newsec <= 0) {
-            btndanmusentwait.innerText = "5 "; //发送不宜频繁
+            btndanmusentwait.innerText = nyarukolive_update_frequency+" ";
             btndanmusentwait.style.display = "none";
             btndanmusent.style.display = "inline-block";
         } else {
@@ -207,6 +209,28 @@ function sendBulletCommentChk() {
         swmenu(1,true);
     }
 }
+function changemodebtn() {
+
+}
+function getStatus() {
+    console.log("getStatus...");
+    //nyarukolive_update_frequency
+    var gstatus = {
+        "api":2,
+        "liveid":nyarukolive_config["liveid"],
+        "blockbullet":document.getElementById("nyarukolive_blockbullet").value,
+        "oldbarrageid":nyarukolive_oldbarrageid,
+        "frequency":50000000,
+        "limit":10,
+        "token":nyarukolive_config["token"],
+        "browsertoken":nyarukolive_config["browsertoken"]
+    };
+    $.post(nyarukolive_config["api"],gstatus,function(result){
+        console.log(result);
+        if (result && result != "") {
+        }
+    });
+}
 function sendBulletComment() {
     var guestinfo = loadguestname(true);
     var danmuchat = document.getElementById("nyarukolive_danmuchat");
@@ -259,7 +283,7 @@ function sendBulletComment() {
         }
     });
     btndanmusent.style.display = "none";
-    btndanmusentwait.innerText = "5 ";
+    btndanmusentwait.innerText = nyarukolive_update_frequency+" ";
     btndanmusentwait.style.display = "inline-block";
 }
 function sendBulletCommentFail(errinfo) {

@@ -218,9 +218,9 @@ function nyarukoLiveShortcode($attr, $content) {
             <tr>
             <td>屏蔽弹幕</td>
             <td>
-                <select>
-                    <option>不屏蔽</option>
-                    <option>屏蔽所有</option>
+                <select id="nyarukolive_blockbullet">
+                    <option value="0">不屏蔽</option>
+                    <option value="1">屏蔽所有</option>
                 </select>
             </td>
             </tr>
