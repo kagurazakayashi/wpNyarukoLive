@@ -2,6 +2,7 @@ var video = document.getElementById('nyarukolive_video');
 var videosrc = document.getElementById('nyarukolive_videosrc');
 var pauseboxi = document.getElementById('nyarukolive_playbtn');
 var pauseboxi2 = document.getElementById('nyarukolive_btnplayi');
+var fsiconbtn = document.getElementById('nyarukolive_fsiconbtna');
 var nyarukolivediv = document.getElementById('nyarukolive');
 var sendbtn = document.getElementById('nyarukolive_sendbtn');
 var sendwaittimer = document.getElementById('nyarukolive_sendbtn');
@@ -101,6 +102,7 @@ function nyarukolive_playpausebtn() {
                 player.pause();
             }
             pauseboxi.style.display='block';
+            if (isfullScreen) fsiconbtn.style.display='block';
             pauseboxi2.src = nyarukolive_pluginurl+"lib/baseline-play_arrow-24px.svg";
         } else {
             console.log("play");
@@ -111,6 +113,7 @@ function nyarukolive_playpausebtn() {
                 player.play();
             }
             pauseboxi.style.display='none';
+            if (isfullScreen) fsiconbtn.style.display='none';
             pauseboxi2.src = nyarukolive_pluginurl+"lib/baseline-pause-24px.svg";
         }
         playing = !playing;
@@ -308,6 +311,25 @@ function sendBulletComment(iskey=false) {
         nyarukolive_showalert("发送太频繁了，休息一下");
         return;
     }
+    if (btndanmusent.style.display == "none") {
+        nyarukolive_showalert("发送太频繁了，休息一下");
+        return;
+    }
+    if (guestinfo[0].length < 1 && guestinfo[1].length < 1) {
+        nyarukolive_showalert("请输入用户名和邮箱");
+        swmenu(1,true);
+        return;
+    }
+    if (guestinfo[0].length < 3) {
+        nyarukolive_showalert("用户名至少三位");
+        swmenu(1,true);
+        return;
+    }
+    if (guestinfo[1].length < 5 || guestinfo[1].indexOf("@") == -1 || guestinfo[1].indexOf(".") == -1) {
+        nyarukolive_showalert("请输入有效邮件地址");
+        swmenu(1,true);
+        return;
+    }
     var bulletcomment = {
         "api":1,
         "liveid":nyarukolive_config["liveid"],
@@ -417,40 +439,56 @@ function getCookie(c_name)
     return ""
 }
 function requestFullScreen(element) {
+    nyarukolivediv.className = "nyarukolivefullpage";
+    var nyarukolive_titlebar = document.getElementById('nyarukolive_titlebar');
+    var nyarukolive_footbar = document.getElementById('nyarukolive_footbar');
+    // if (nyarukolive_videobox.style.height > getClientHeight() - 90) {}
+    nyarukolive_footbar.style.display = "none";
+    nyarukolive_titlebar.style.display = "none";
+    fsiconbtn.style.display = pauseboxi.style.display;
     if (element.requestFullscreen) {
         element.requestFullscreen();
-        isfullScreen = true;
     } else if (element.mozRequestFullScreen) {
         element.mozRequestFullScreen();
-        isfullScreen = true;
     } else if (element.webkitRequestFullScreen) {
         element.webkitRequestFullScreen();
-        isfullScreen = true;
-    } else {
-        console.log("未能进入全屏");
     }
+    isfullScreen = true;
 }
 function exitFullscreen(element) {
+    nyarukolivediv.className = "";
+    var nyarukolive_titlebar = document.getElementById('nyarukolive_titlebar');
+    var nyarukolive_footbar = document.getElementById('nyarukolive_footbar');
+    nyarukolive_footbar.style.display = "table";
+    nyarukolive_titlebar.style.display = "table";
+    fsiconbtn.style.display = "none";
     if (element.exitFullscreen) {
         element.exitFullscreen();
-        isfullScreen = false;
     } else if (element.mozCancelFullScreen) {
         element.mozCancelFullScreen();
-        isfullScreen = false;
     } else if (element.webkitCancelFullScreen) {
         element.webkitCancelFullScreen();
-        isfullScreen = false;
-    } else {
-        console.log("未能退出全屏");
     }
+    isfullScreen = false;
+}
+function getClientHeight()
+{
+  var clientHeight=0;
+  if(document.body.clientHeight&&document.documentElement.clientHeight)
+  {
+  var clientHeight = (document.body.clientHeight<document.documentElement.clientHeight)?document.body.clientHeight:document.documentElement.clientHeight;
+  }
+  else
+  {
+  var clientHeight = (document.body.clientHeight>document.documentElement.clientHeight)?document.body.clientHeight:document.documentElement.clientHeight;
+  }
+  return clientHeight;
 }
 function fullScreen() {
     if (isfullScreen) {
         exitFullscreen(document);
-        console.log("exitFullscreen");
     } else {
         requestFullScreen(nyarukolivediv);
-        console.log("requestFullScreen");
     }
 }
 function removeWpNyarukoNPlayer() {

@@ -43,6 +43,7 @@ function randomstring($length = 16) {
     return $mstr;
 }
 function nyarukoLiveShortcode($attr, $content) {
+    $expguestreg = true; //TODO:简化游客信息填写
     //0.AUTO 1FLV 2HLS 3HLS+
     $errcode = [0,"ok"];
     $liveplayermode = 0;
@@ -124,7 +125,7 @@ function nyarukoLiveShortcode($attr, $content) {
     echo "};</script>";
     ?>
     <br/>
-    <div id="nyarukolive">
+    <div id="nyarukolive" class="">
     <table id="nyarukolive_titlebar" border="0">
     <tbody>
         <tr>
@@ -169,16 +170,20 @@ function nyarukoLiveShortcode($attr, $content) {
         <div id="nyarukolive_pausebox" onclick="nyarukolive_playpausebtn();">
             <img id="nyarukolive_playbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline_play_circle_outline_white_48dp.png" alt="点击播放" />
         </div>
-        <table id="nyarukolive_usermenu">
+        <a id="nyarukolive_fsiconbtna" href="javascript:exitFullscreen(document);" title="退出全屏幕"><img id="nyarukolive_fsiconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-fullscreen-24px.svg" alt="全" />&nbsp;退出全屏幕</a>
+        <table id="nyarukolive_usermenu"<?php if ($expguestreg) echo ' class="nyarukolive_usermenusmall"'; ?>>
         <tbody>
             <tr>
             <td>用户信息</td>
-            <td align="right"><a href="javascript:saveguestname();" title="保存用户信息"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-done-24px.svg" alt="√" /></a>&emsp;<a href="javascript:loadguestname();" title="放弃更改"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-close-24px.svg" alt="×" /></a></td>
+            <td align="right"><a href="javascript:saveguestname();" title="保存用户信息"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-done-24px.svg" alt="√" /></a>
+            <!-- &emsp;<a href="javascript:loadguestname();" title="放弃更改"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-close-24px.svg" alt="×" /></a> -->
+            </td>
             </tr>
             <tr><td colspan="2" width="100%">昵称（必须）：<br/><input name="nyarukolive_dmuname" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_dmuname" placeholder="输入显示名称" value="" maxlength="16" oninput="cleartext(this);"></td></tr>
             <tr><td colspan="2" width="100%">电子邮件（必须）：<br/><input name="nyarukolive_dmumail" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_dmumail" placeholder="输入电子邮件" value="" maxlength="32" oninput="cleartext(this);"></td></tr>
-            <tr><td colspan="2" width="100%">网址（选填）：<br/><input name="nyarukolive_dmuurl" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_dmuurl" placeholder="输入个人网址（选填）" value="" maxlength="64" oninput="cleartext(this);"></td></tr>
-            <tr><td colspan="2" width="100%">使用我自己的账户：<br/><a>登录/注册(暂未开放)</a></td></tr>
+            
+            <tr><td colspan="2" width="100%"<?php if ($expguestreg) echo " style='display:none;'"; ?>>网址（选填）：<br/><input name="nyarukolive_dmuurl" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_dmuurl" placeholder="输入个人网址（选填）" value="" maxlength="64" oninput="cleartext(this);"></td></tr>
+            <tr><td colspan="2" width="100%"<?php if ($expguestreg) echo " style='display:none;'"; ?>>使用我自己的账户：<br/><a>登录/注册(暂未开放)</a></td></tr>
         </tbody>
         </table>
         <script>swmenu(1);loadguestname();</script>
@@ -234,8 +239,8 @@ function nyarukoLiveShortcode($attr, $content) {
         <td width="20">
             <a id="nyarukolive_btnplay" href="javascript:nyarukolive_playpausebtn();" title="播放/暂停"><img id="nyarukolive_btnplayi" class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-play_arrow-24px.svg" src2="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-play_arrow-24px.svg" src3="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-pause-24px.svg" /></a>
         </td>
-        <td width="80"><input name="nyarukolive_danmunick" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_danmunick" placeholder="昵称" value="" maxlength="20" readonly="readonly" onclick="swmenu(1,true);"></td>
-        <td><input name="nyarukolive_danmuchat" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_danmuchat" placeholder="输入实时评论（最多32个字）" value="" maxlength="32" oninput="cleartext(this,false,true,true);" onfocus="sendBulletCommentChk();" onkeyup="sendBulletComment(true);"></td>
+        <td width="80"><input name="nyarukolive_danmunick" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_danmunick" placeholder="请输入昵称" value="" maxlength="20" readonly="readonly" onclick="swmenu(1,true);"></td>
+        <td><input name="nyarukolive_danmuchat" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_danmuchat" placeholder="点这里输入弹幕内容（最多32个字）" value="" maxlength="32" oninput="cleartext(this,false,true,true);" onfocus="sendBulletCommentChk();" onkeyup="sendBulletComment(true);"></td>
         <td width="80" align="right">
             <span id="nyarukolive_btndanmusentwait">5</span>
             <a id="nyarukolive_btndanmusent" href="javascript:sendBulletComment();" title="发送弹幕"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-send-24px.svg" alt="发"/></a>

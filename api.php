@@ -97,16 +97,23 @@ function nyarukoLiveAPIGetStatus($table_prefix) {
                 $statinfo["limit"] = $gstatuslimit;
             }
         }
+        $statinfo["name"] = "";
+        if (isset($_POST["name"])) {
+            $statinfo["name"] = htmlentities($_POST["name"]);
+        } else {
+            return showerror(array('code' => -14, 'msg' => '请输入用户名，至少三位。'));
+        }
         $statinfo["email"] = "";
-        if (isset($_POST["email"])) {
+        $mailpattern = "/^([0-9A-Za-z\\-_\\.]+)@([0-9a-z]+\\.[a-z]{2,3}(\\.[a-z]{2})?)$/i";
+        if (isset($_POST["email"]) && preg_match($mailpattern,$_POST["email"])) {
             $statinfo["email"] = htmlentities($_POST["email"]);
         } else {
-            return showerror(array('code' => -14, 'msg' => '缺少弹幕发送者邮箱。'));
+            return showerror(array('code' => -15, 'msg' => '邮箱未填写或格式不正确。'));
         }
         $barragecmd = "SELECT `id`,`name`,`email`,`url`,`date`,`content`,`style` FROM `".$table_prefix."live_commenting` WHERE (`liveid`=".$statinfo["liveid"].") AND (`id`>".$statinfo["oldbarrageid"].") AND (`email`<>'".$statinfo["email"]."') AND (`date`>=DATE_SUB(NOW(),INTERVAL ".$statinfo["frequency"]." SECOND)) ORDER BY `date` LIMIT ".$statinfo["limit"].";";
         $barrages = nyalivedb($barragecmd,true);
         if ($barrages == NYARUKOLIVE_ERROR) {
-            return showerror(array('code' => -15, 'msg' => '获取弹幕失败。'));
+            return showerror(array('code' => -16, 'msg' => '获取弹幕失败。'));
         }
         $statinfo["barrages"] = $barrages;
     }
