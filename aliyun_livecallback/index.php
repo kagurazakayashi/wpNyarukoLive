@@ -7,8 +7,14 @@ JSON返回值：{"code":<状态码>,"msg":<状态描述>}
 - -2：查询条目是否存在时出现数据库错误。
 - -3：缺少 id, app, appname 其中之一。
 */
-// ini_set('display_errors',1);
-// error_reporting(-1);
+//DEBUG用 开始 可直接注释关闭
+error_reporting(E_ALL); //打开全部错误监视
+ini_set('display_errors', 0); //禁止把错误输出到页面
+ini_set('log_errors', 1); //设置错误信息输出到文件
+ini_set("error_log", 'phperr.log'); //指定错误日志文件名
+logtofile("playing.log"); //记录回调内容到文件
+//DEBUG用 结束
+
 header('Content-Type: application/json; charset=utf-8');
 header('X-Powered-By: wpNyarukoLive');
 define("NYARUKOLIVE_ERROR", "[NYA-L+ERR]");
@@ -96,8 +102,16 @@ function nyalivedb($sql) {
     }
     $con->close();
 }
+function logtofile($logfilename) {
+    $txt = "\n";
+    foreach ($_GET as $key => $value) {
+        $txt = $txt.$key.":".$value."|";
+    }
+    file_put_contents($logfilename,$txt,FILE_APPEND);
+}
 function echoerror($status,$info) {
     $jsonarr = array('code' => $status, 'msg' => $info);
-    return json_encode($jsonarr);
+    $json = json_encode($jsonarr);
+    return $json;
 }
 ?>
