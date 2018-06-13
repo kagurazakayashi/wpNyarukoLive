@@ -46,6 +46,7 @@ function nyarukolive_loadconfig(config) {
     if (config["protocol"]) nyarukolive_protocol = config["protocol"];
     if (config["pluginurl"]) nyarukolive_pluginurl = config["pluginurl"];
     if (config["timezone"]) nyarukolive_timezone = parseInt(config["timezone"]);
+    if (config["timedst"]) nyarukolive_timedst = parseInt(config["timedst"]);
     return 0;
 }
 function nyarukolive_selectmode(nmode) {
@@ -162,23 +163,36 @@ function updatetime() {
     var localtimestr = (updatetimezero(dt.getHours()) + ":" + updatetimezero(dt.getMinutes()) + ":" + updatetimezero(dt.getSeconds()));
     if (document.getElementById('nyarukolive_ltime')) document.getElementById('nyarukolive_ltime').innerText = localtimestr;
     if (nyarukolive_timezone != 10000) {
-        var def = dt.getTimezoneOffset()/60;
-        var gmt = (dt.getHours() + def);
-        var ending = ":" + updatetimezero(dt.getMinutes()) + ":" + updatetimezero(dt.getSeconds());
-        var gmtadd = gmt + nyarukolive_timezone;
-        var wtime = updatetimecheck24((gmtadd > 24) ? (gmtadd - 24) : gmtadd,gmtadd);
-        var wtimestr = (updatetimezero(wtime) + ending);
+        var worldtimea = worldtime(nyarukolive_timezone,false,nyarukolive_timedst);
+        var wtimestr = updatetimezero(worldtimea[0])+":"+updatetimezero(worldtimea[1])+":"+updatetimezero(worldtimea[2]);
         if (document.getElementById('nyarukolive_wtime')) document.getElementById('nyarukolive_wtime').innerText = wtimestr;
     }
 }
+function worldtime(tposition,isDate = false,dst = 0) {
+	var myDate = new Date();
+	var timeoff = new Date().getTimezoneOffset();
+	timeoff = timeoff / 60;//获取时区
+	var zerotime = myDate.getHours() + timeoff;
+	var wordtimehours = zerotime + tposition;
+	var wordtime = [];
+    wordtimehours += dst;
+	if(wordtimehours < 0){
+		wordtimehours += 24;
+	}else if(wordtimehours > 24){
+		wordtimehours -= 24;
+    }
+	if(isDate){
+		wordtime.push(myDate.getFullYear());
+		wordtime.push((myDate.getMonth()+1));
+		wordtime.push(myDate.getDate());
+	}
+	wordtime.push(wordtimehours);
+	wordtime.push(myDate.getMinutes());
+	wordtime.push(myDate.getSeconds());
+	return wordtime;
+}
 function updatetimezero(num) {
     return ((num <= 9) ? ("0" + num) : num);
-}
-function updatetimecheck24(hour) {
-    var newhour = (hour >= 24) ? hour - 24 : hour;
-    if (newhour < 0) { newhour += 24; }
-    else if (newhour > 24) { newhour -= 24; }
-    return newhour;
 }
 function swmenu(vmenuid,noclose = false) {
     var vmenuname = ["nyarukolive_menu","nyarukolive_usermenu"];
