@@ -296,7 +296,7 @@ function getStatus() {
         }
     });
 }
-function updatestatus() {
+function addbarrage() {
     if (nyarukolive_barragecache.length > 0) {
         nyarukolive_sendDanMu(nyarukolive_barragecache[0][5]);
         nyarukolive_barragecache.splice(0,1);
@@ -389,7 +389,8 @@ function sendBulletCommentFail(errinfo) {
     }
     nyarukolive_showalert(einfo);
 }
-function cleartext(thistbox,isstring = false,usefullchar = false,norevalue=false) {
+
+function cleartext(thistbox,isstring = false,usefullchar = false,norevalue=true) {
     //new RegExp("[`~!@#$^&*()=|{}':;'\",\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？%+_]")
     var pattern = new RegExp("[`~!@#^&*()|{}':;'\"\\[\\]<>/]");
     if (isstring) {
@@ -427,7 +428,17 @@ function cleartext(thistbox,isstring = false,usefullchar = false,norevalue=false
             }
             rs += sub;
         }
-        thistbox.value = rs;
+        if (norevalue) {
+            if (thistbox.value != rs) {
+                thistbox.style.color = '#F00';
+                return false;
+            } else {
+                thistbox.style.color = '';
+                return true;
+            }
+        } else {
+            thistbox.value = rs;
+        }
     }
 }
 function setCookie(c_name,value,expiredays)

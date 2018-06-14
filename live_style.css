@@ -107,7 +107,7 @@
     bottom: 10px;
     right: 10px;
     width: 200px;
-    height: 270px;
+    height: 220px;
     padding-left: 20px;
     padding-right: 20px;
     background-color: rgba(0, 0, 0, 0.8);
@@ -127,7 +127,7 @@
     position: absolute;
     bottom: 10px;
     left: 10px;
-    width: 200px;
+    /* width: 200px; */
     height: 270px;
     padding-left: 20px;
     padding-right: 20px;

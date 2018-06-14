@@ -180,9 +180,8 @@ function nyarukoLiveShortcode($attr, $content) {
             <!-- &emsp;<a href="javascript:loadguestname();" title="放弃更改"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-close-24px.svg" alt="×" /></a> -->
             </td>
             </tr>
-            <tr><td colspan="2" width="100%">昵称（必须）：<br/><input name="nyarukolive_dmuname" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_dmuname" placeholder="输入显示名称" value="" maxlength="16" oninput="cleartext(this);"></td></tr>
+            <tr><td colspan="2" width="100%">昵称（必须）：<br/><input name="nyarukolive_dmuname" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_dmuname" placeholder="输入显示名称" value="" maxlength="16" oninput="cleartext(this,false,false,true);"></td></tr>
             <tr><td colspan="2" width="100%">电子邮件（必须）：<br/><input name="nyarukolive_dmumail" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_dmumail" placeholder="输入电子邮件" value="" maxlength="32" oninput="cleartext(this);"></td></tr>
-            
             <tr><td colspan="2" width="100%"<?php if ($expguestreg) echo " style='display:none;'"; ?>>网址（选填）：<br/><input name="nyarukolive_dmuurl" class="nyarukolive_danmuinbox w100" type="text" id="nyarukolive_dmuurl" placeholder="输入个人网址（选填）" value="" maxlength="64" oninput="cleartext(this);"></td></tr>
             <tr><td colspan="2" width="100%"<?php if ($expguestreg) echo " style='display:none;'"; ?>>使用我自己的账户：<br/><a>登录/注册(暂未开放)</a></td></tr>
         </tbody>
@@ -196,19 +195,19 @@ function nyarukoLiveShortcode($attr, $content) {
             </tr>
             <tr>
             <td>线路</td>
-            <td>
-                <select>
-                    <option>默认线路</option>
-                </select>
-            </td>
-            </tr>
-            <tr>
-            <td>分辨率</td>
-            <td>
-                <select>
-                    <option>原画</option>
-                </select>
-            </td>
+            <td><select onchange="window.location=this.value;"><?php 
+            if (isset($attr["lines"])) {
+                $lines = explode('|', $attr["lines"]);
+                foreach ($lines as $line) {
+                    $lineinfo = explode(',', $line);
+                    $selected = "";
+                    if (count($lineinfo) > 2 && $lineinfo[2] == "now") {
+                        $selected = " selected";
+                    }
+                    echo '<option value="'.$lineinfo[1].'"'.$selected.'>'.$lineinfo[0].'</option>';
+                }
+            }
+            ?></select></td>
             </tr>
             <tr>
             <td>传输方式</td>
