@@ -101,16 +101,18 @@ function nyarukoLiveAPIGetStatus($table_prefix) {
         if (isset($_POST["name"])) {
             $statinfo["name"] = htmlentities($_POST["name"]);
         } else {
-            return showerror(array('code' => -14, 'msg' => '请输入用户名，至少三位。'));
+            //return showerror(array('code' => -14, 'msg' => '请输入用户名，至少三位。'));
         }
         $statinfo["email"] = "";
+        $mailcmd = "";
         $mailpattern = "/^([0-9A-Za-z\\-_\\.]+)@([0-9a-z]+\\.[a-z]{2,3}(\\.[a-z]{2})?)$/i";
         if (isset($_POST["email"]) && preg_match($mailpattern,$_POST["email"])) {
             $statinfo["email"] = htmlentities($_POST["email"]);
+            $mailcmd = " AND (`email`<>'".$statinfo["email"]."')";
         } else {
-            return showerror(array('code' => -15, 'msg' => '邮箱未填写或格式不正确。'));
+            //return showerror(array('code' => -15, 'msg' => '邮箱未填写或格式不正确。'));
         }
-        $barragecmd = "SELECT `id`,`name`,`email`,`url`,`date`,`content`,`style` FROM `".$table_prefix."live_commenting` WHERE (`liveid`=".$statinfo["liveid"].") AND (`id`>".$statinfo["oldbarrageid"].") AND (`email`<>'".$statinfo["email"]."') AND (`date`>=DATE_SUB(NOW(),INTERVAL ".$statinfo["frequency"]." SECOND)) ORDER BY `date` LIMIT ".$statinfo["limit"].";";
+        $barragecmd = "SELECT `id`,`name`,`email`,`url`,`date`,`content`,`style` FROM `".$table_prefix."live_commenting` WHERE (`liveid`=".$statinfo["liveid"].") AND (`id`>".$statinfo["oldbarrageid"].")".$mailcmd." AND (`date`>=DATE_SUB(NOW(),INTERVAL ".$statinfo["frequency"]." SECOND)) ORDER BY `date` LIMIT ".$statinfo["limit"].";";
         $barrages = nyalivedb($barragecmd,true);
         if ($barrages == NYARUKOLIVE_ERROR) {
             return showerror(array('code' => -16, 'msg' => '获取弹幕失败。'));
@@ -133,7 +135,8 @@ function nyarukoLiveAPISendBarrage($table_prefix) {
     } else {
         return showerror(array('code' => -3, 'msg' => '用户名不符合要求'));
     }
-    if (isset($_POST["email"]) && strlen($_POST["email"]) > 0 && strlen($_POST["email"]) <= 32) {
+    $mailpattern = "/^([0-9A-Za-z\\-_\\.]+)@([0-9a-z]+\\.[a-z]{2,3}(\\.[a-z]{2})?)$/i";
+    if (isset($_POST["email"]) && strlen($_POST["email"]) > 0 && strlen($_POST["email"]) <= 32 && preg_match($mailpattern,$_POST["email"])) {
         $bulletcomment["email"] = htmlentities($_POST["email"]);
         $userinfo["email"] = $_POST["email"];
     } else {

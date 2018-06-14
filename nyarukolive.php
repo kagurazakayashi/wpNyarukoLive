@@ -99,6 +99,7 @@ function nyarukoLiveShortcode($attr, $content) {
         }
     } else if ($errcode[0] == 0) {
         $errcode = [-3,"配置错误：直播尚未登记"];
+        $info["liveid"] = -1;
     }
     $time = strval(time());
     $timelen = strlen($time);
@@ -250,7 +251,7 @@ function nyarukoLiveShortcode($attr, $content) {
         </tr>
     </tbody>
     </table>
-    <?php } else if ($errcode[0] == -1 && isset($attr["stoppic"])) {
+    <?php } else if ($errcode[0] != -5 && isset($attr["stoppic"])) {
         echo '<img id="nyarukolive_stopalertimg" src="'.$attr["stoppic"].'" alt="目前尚未直播" />';
     } else {
         echo '<div id="nyarukolive_stopalert"><h1>&emsp;</h1><h1>暂时无法观看</h1><h2>'.$errcode[1].'</h2><h2>代码：'.$errcode[0].'</h2></div>';

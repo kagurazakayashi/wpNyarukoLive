@@ -1,3 +1,4 @@
+console.log("[wpNyarukoLive] Loading...");
 var video = document.getElementById('nyarukolive_video');
 var videosrc = document.getElementById('nyarukolive_videosrc');
 var pauseboxi = document.getElementById('nyarukolive_playbtn');
@@ -11,11 +12,13 @@ var btndanmusent = document.getElementById('nyarukolive_btndanmusent');
 var player = null;
 var ready = false;
 var playing = false;
+var serplaying = 0;
 var nyarukolive_playermode = 0;
 var nyarukolive_flv = "";
 var nyarukolive_hls = "";
 var nyarukolive_protocol = "";
 var nyarukolive_timezone = 10000;
+var nyarukolive_lconf = 0;
 var isfullScreen = false;
 var nyarukolive_barragecache = [];
 var nyarukolive_updatebarragespeed = 300;
@@ -31,7 +34,7 @@ var nyarukolive_dmObj = [];
 var nyarukolive_dmtime = 5000;//弹幕速度
 function nyarukolive_loadconfig(config) {
     if (config["pcode"] && config["pinfo"]) {
-        console.log("wpNyarukoLive Status", config["pcode"], config["pinfo"]);
+        console.log("[wpNyarukoLive]", config["pcode"], config["pinfo"]);
         return 1;
     }
     if (config["mode"]) nyarukolive_playermode = parseInt(config["mode"]);
@@ -88,13 +91,13 @@ function nyarukolive_selectmode(nmode) {
 }
 function nyarukolive_videoready() {
     ready = true;
-    console.log("ready.");
+    console.log("[wpNyarukoLive] Ready.");
     // playpausebtn();
 }
 function nyarukolive_playpausebtn() {
     // if (ready) {
         if (playing) {
-            console.log("pause");
+            console.log("[wpNyarukoLive] Pause.");
             // pauseboxi.style.display='block';
             if (mode == 2) {
                 video.pause();
@@ -252,11 +255,14 @@ function changemodebtn() {
 
 }
 function getStatus() {
+    if (nyarukolive_config["liveid"] <= 0) return;
     var guestinfo = loadguestname(true);
+    var blockbullet = 1;
+    if (nyarukolive_lconf == 0) blockbullet = document.getElementById("nyarukolive_blockbullet").value;
     var gstatus = {
         "api":2,
         "liveid":nyarukolive_config["liveid"],
-        "blockbullet":document.getElementById("nyarukolive_blockbullet").value,
+        "blockbullet":blockbullet,
         "oldbarrageid":nyarukolive_oldbarrageid,
         "frequency":nyarukolive_update_frequency,
         "limit":50,
@@ -271,6 +277,12 @@ function getStatus() {
                 dmjson = result;
             } else {
                 dmjson = $.parseJSON(result);
+            }
+            if (serplaying == 0) {
+                serplaying = dmjson.isplaying;
+            } else if ((serplaying < 0 && dmjson.isplaying > 0) || (serplaying > 0 && dmjson.isplaying < 0)) {
+                console.log("[wpNyarukoLive] Reloading...");
+                location.reload();
             }
             if (dmjson.code == 0 && dmjson.isplaying > 0 && dmjson.liveid == nyarukolive_config["liveid"]) {
                 dmjson.barrages.forEach(nowdm => {
@@ -514,15 +526,18 @@ function wpnyarukoliveinit() {
     nyarukolive_lconf = nyarukolive_loadconfig(nyarukolive_config);
     if (nyarukolive_lconf == 0) {
         if (chkhttps()) {
+            getStatus();
+            setInterval("getStatus()",nyarukolive_updatestatusspeed);
             nyarukolive_selectmode(nyarukolive_playermode);
             updatetime();
             setInterval("updatetime()",1000);
-            updatestatus();
-            setInterval("updatestatus()",nyarukolive_updatebarragespeed);
-            //getStatus();
-            setInterval("getStatus()",nyarukolive_updatestatusspeed);
+            addbarrage();
+            setInterval("addbarrage()",nyarukolive_updatebarragespeed);
         }
-    } else if (nyarukolive_lconf != 1) {
+    } else if (nyarukolive_lconf == 1) {
+        getStatus();
+        setInterval("getStatus()",nyarukolive_updatestatusspeed);
+    } else {
         nyarukolive_error(nyarukolive_lconf);
     }
     console.log("Loading Video ...OK");
@@ -594,3 +609,4 @@ function nyarukolive_sendDanMu(textval,selfsend=false) {
         nyarukolive_dmObj.remove($(this));
     });
 }
+console.log("[wpNyarukoLive] Loaded.");
