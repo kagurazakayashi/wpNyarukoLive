@@ -1,5 +1,6 @@
 <?php
-include "../../../wp-config.php";
+$starttime = explode(' ',microtime());
+include_once "../../../nyarukolive-config.php";
 define("NYARUKOLIVE_ERROR", "[NYA-L+ERR]");
 define("NYARUKOLIVE_UPDATE_FREQUENCY", 5);
 date_default_timezone_set('PRC');
@@ -14,9 +15,11 @@ function nyarukoLiveAPI($table_prefix) {
         $array = null;
         switch ($api) {
             case 1:
+                // $array = array();
                 $array = nyarukoLiveAPISendBarrage($table_prefix);
                 break;
             case 2:
+                // $array = array();
                 $array = nyarukoLiveAPIGetStatus($table_prefix);
                 break;
             default:
@@ -27,7 +30,14 @@ function nyarukoLiveAPI($table_prefix) {
             //die();
             $array = array('code' => -1, 'msg' => '不可识别的接入方式。');
         }
-        die(json_encode($array));
+         //程序运行时间
+        $endtime = explode(' ',microtime());
+        $thistime = $endtime[0]+$endtime[1]-($starttime[0]+$starttime[1]);
+        $thistime = round($thistime,3);
+        $array['api'] = $api;
+        $array['returntime'] = time();
+        $array['calctime'] = $thistime;
+        echo json_encode($array);
     } else {
         header('HTTP/1.1 403 Forbidden');
         die();
@@ -119,7 +129,7 @@ function nyarukoLiveAPIGetStatus($table_prefix) {
         }
         $statinfo["barrages"] = $barrages;
     }
-    return json_encode($statinfo);
+    return $statinfo;
 }
 function nyarukoLiveAPISendBarrage($table_prefix) {
     $bulletcomment = [];
@@ -208,7 +218,7 @@ function nyarukoLiveAPISendBarrage($table_prefix) {
     }
     $jsonarr = array('code' => 0, 'msg' => "弹幕发送成功。");
     $returnarr = array_merge($jsonarr,$userinfo);
-    return json_encode($returnarr);
+    return $returnarr;
 }
 function nyalivedb($sql,$multi=false) {
     $con = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);

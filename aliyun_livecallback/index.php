@@ -18,7 +18,7 @@ logtofile("playing.log"); //记录回调内容到文件
 header('Content-Type: application/json; charset=utf-8');
 header('X-Powered-By: wpNyarukoLive');
 define("NYARUKOLIVE_ERROR", "[NYA-L+ERR]");
-include "../wp-config.php";
+include "../nyarukolive-config.php";
 nyalivealicb($table_prefix);
 function nyalivealicb($table_prefix) {
     $sqlkeys = [];

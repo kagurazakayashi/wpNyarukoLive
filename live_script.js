@@ -24,7 +24,7 @@ var nyarukolive_barragecache = [];
 var nyarukolive_updatebarragespeed = 300;
 var nyarukolive_updatestatusspeed = 5000;
 var nyarukolive_oldbarrageid = 0;
-var nyarukolive_update_frequency = 5;
+var nyarukolive_update_frequency = 15;
 var nyarukolive_dmnum = 0;
 var nyarukolive_dmW = 0;
 var nyarukolive_dmH = 26;//防错弹幕初始高，根据字号，字体修改
@@ -271,6 +271,7 @@ function getStatus() {
         "browsertoken":nyarukolive_config["browsertoken"]
     };
     $.post(nyarukolive_config["api"],gstatus,function(result){
+        // console.log("result",result);
         if (result && result != "") {
             var dmjson = null;
             if (typeof(result) == "object") {
@@ -278,6 +279,7 @@ function getStatus() {
             } else {
                 dmjson = $.parseJSON(result);
             }
+            
             if (serplaying == 0) {
                 serplaying = dmjson.isplaying;
             } else if ((serplaying < 0 && dmjson.isplaying > 0) || (serplaying > 0 && dmjson.isplaying < 0)) {
@@ -293,6 +295,8 @@ function getStatus() {
                 });
                 nyarukolive_barragecache = dmjson.barrages;
             }
+        } else {
+            console.log("状态检查失败。");
         }
     });
 }

@@ -186,7 +186,7 @@ function nyarukoLiveShortcode($attr, $content) {
             <tr><td colspan="2" width="100%"<?php if ($expguestreg) echo " style='display:none;'"; ?>>使用我自己的账户：<br/><a>登录/注册(暂未开放)</a></td></tr>
         </tbody>
         </table>
-        <script>swmenu(1);loadguestname();</script>
+        <script>loadguestname();</script>
         <table id="nyarukolive_menu">
         <tbody>
             <tr>
