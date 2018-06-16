@@ -29,5 +29,5 @@ function wpNyarukoOptionCMgLiveDelete(liveid) {
     if (window.confirm("将会永久删除这条记录和相关弹幕。\n如果后台接口再次收到目标为此条目的设置，将新建条目。\n确定吗？")) window.location.href = 'tools.php?page=nyarukolive-options&nyamode=mgdellive&liveid='+liveid+'&tabid=2';
 }
 function wpNyarukoOptionCMgLiveDanmaku(liveid) {
-    window.location.href = 'tools.php?page=nyarukolive-options&nyamode=mddmmgr&liveid='+liveid+'&tabid=2';
+    window.location.href = 'tools.php?page=nyarukolive-options&nyamode=mddmmgr&liveid='+liveid+'&tabid=3#3';
 }

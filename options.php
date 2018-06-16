@@ -10,6 +10,44 @@ function nyarukoliveGetOptions() {
 	}
 	return $wpNyarukoLiveOption;
 }
+//获得当前弹幕
+function nyarukoliveDanmaku() {
+	global $wpdb;
+	$infos = [];
+	if (isset($_GET["nyamode"]) && $_GET["nyamode"] == "mddmmgr" && isset($_GET["liveid"])) {
+		$liveid = intval($_GET["liveid"]);
+		echo "正在管理直播ID为 ".$liveid." 的弹幕列表：";
+		$dbinfos = $wpdb->get_results("SELECT * FROM `".$wpdb->prefix."live_commenting` ORDER BY `date` DESC LIMIT 1000;");
+		foreach ($dbinfos as $dbinfo) {
+			$info["id"] = isset($dbinfo->id) ? $dbinfo->id : -1;
+			$info["liveid"] = isset($dbinfo->liveid) ? $dbinfo->liveid : -1;
+			$info["browsertoken"] = isset($dbinfo->browsertoken) ? $dbinfo->browsertoken : "";
+			$info["token"] = isset($dbinfo->token) ? $dbinfo->token : "";
+			$info["name"] = isset($dbinfo->name) ? $dbinfo->name : "";
+			$info["email"] = isset($dbinfo->email) ? $dbinfo->email : "没有邮箱";
+			$info["url"] = isset($dbinfo->url) ? $dbinfo->url : "没有网址";
+			$info["ip"] = isset($dbinfo->ip) ? $dbinfo->ip : "";
+			$info["date"] = isset($dbinfo->date) ? $dbinfo->date : "";
+			$info["content"] = isset($dbinfo->content) ? $dbinfo->content : "";
+			$info["style"] = isset($dbinfo->style) ? $dbinfo->style : "0:0";
+			$info["ua"] = isset($dbinfo->ua) ? $dbinfo->ua : "";
+			$info["wpuserid"] = isset($dbinfo->wpuserid) ? $dbinfo->wpuserid : 0;
+			array_push($infos,$info);
+		}
+		foreach ($infos as $info) {
+			echo '<tr><th scope="row">'.$info["id"].'<br/>'.$info["liveid"].'</th>';
+			echo '<td><button type="button" onclick="prompt(\'当前会话\',\''.$info["token"].'\');">当前</button><br/><button type="button" onclick="prompt(\'浏览器会话\',\''.$info["browsertoken"].'\');">浏览器</button></td>';
+			echo '<td>'.$info["name"].'<br/>'.$info["email"].'<br/>'.$info["url"].'</td>';
+			echo '<td>'.$info["ip"].'</td>';
+			echo '<td>'.str_replace(" ","<br/>",$info["date"]).'</td>';
+			echo '<td>'.$info["content"].'</td>';
+			echo '<td>'.$info["style"].'</td>';
+			echo '<td><button type="button" onclick="prompt(\'浏览器 UA\',\''.$info["ua"].'\');">查看</button></td>';
+			echo '<td>'.$info["wpuserid"].'</td>';
+			echo '<td><button type="button" onclick="">删除</button></td>';
+		}
+	}
+}
 //获得正在进行中的直播
 function nyarukoliveNowLive() {
     global $wpdb;
@@ -69,8 +107,7 @@ function urlb64decode($str) {
 }
 function nyarukoliveOptionsPage() {
 	if (isset($_GET["nyamode"])) {
-		wpNyarukoCModeGet($_GET["nyamode"]);
-		die('<div id="wpNyarukoInfo">正在应用设置...</div>');
+		if (wpNyarukoCModeGet($_GET["nyamode"])) die('<div id="wpNyarukoInfo">正在应用设置...</div>');
 	}
 	if (isset($_GET["info"])) echo '<div id="wpNyarukoInfo">'.urlb64decode($_GET["info"]).'</div>';
 ?>
@@ -141,10 +178,42 @@ function nyarukoliveOptionsPage() {
 	<div class="wpNyarukoOptionTab" id="wpNyarukoOptionTab3">
 		<h2>弹幕管理</h2>
 		<p>在「推流记录」中选择一个直播流后面的「弹幕管理」。</p>
+		<table width="100%" border="1" cellspacing="1" cellpadding="1" class="wpNyarukoOptionInfotable">
+		<tbody>
+			<tr>
+			<th scope="col">弹幕序号<br/>直播序号</th>
+			<th scope="col">会话编码</th>
+			<th scope="col">发送者<br/>用户信息</th>
+			<th scope="col">发送者IP</th>
+			<th scope="col">发送时间↓</th>
+			<th scope="col">弹幕内容</th>
+			<th scope="col">弹幕样式</th>
+			<th scope="col">浏览器<br/>UA</th>
+			<th scope="col">WP<br/>用户ID</th>
+			<th scope="col">弹幕</th>
+			</tr>
+			<?php nyarukoliveDanmaku(); ?>
+		</tbody>
+		</table>
 	</div>
 	<div class="wpNyarukoOptionTab" id="wpNyarukoOptionTab4">
 		<h2>IP 地址屏蔽</h2>
 		<p>以下设置同时生效于直播播放和弹幕。</p>
+		<table width="100%" border="1" cellspacing="1" cellpadding="1" class="wpNyarukoOptionInfotable">
+		<tbody>
+			<tr>
+			<th scope="col">序号</th>
+			<th scope="col">类型</th>
+			<th scope="col">条件</th>
+			<th scope="col">起始时间↓</th>
+			<th scope="col">结束时间↓</th>
+			<th scope="col">执行</th>
+			<th scope="col">原因</th>
+			<th scope="col">记录</th>
+			</tr>
+			<?php //nyarukoliveNowLive(); ?>
+		</tbody>
+		</table>
 	</div>
 </div>
 <script>wpNyarukoOptionChTab(0,true);</script>
@@ -153,14 +222,20 @@ function nyarukoliveOptionsPage() {
 function wpNyarukoCModeGet($nyamode) {
 	global $wpdb;
 	$alertinfo = "已受理您的变更。";
+	$isalert = true;
 	if ($nyamode == "mglive" && isset($_GET["liveid"]) && isset($_GET["cmode"])) {
 		$liveid = intval($_GET["liveid"]);
 		$cmode = intval($_GET["cmode"]);
 		$dbinfos = $wpdb->get_results("UPDATE `".$wpdb->prefix."live_channels` SET `cmode`=".$cmode." WHERE `".$wpdb->prefix."live_channels`.`liveid`=".$liveid.";");
 		$alertinfo = "将 ".$liveid." 号直播间播放状态设置为 ".$cmode;
-    }
-    $tabid = "";
-    if (isset($_GET["tabid"])) $tabid = "#".$_GET["tabid"];
-	echo "<script>window.location.href = 'tools.php?page=nyarukolive-options&info=".urlb64encode($alertinfo).$tabid."';</script>";
+    } else if ($nyamode == "mddmmgr" && isset($_GET["liveid"])) {
+		$isalert = false;
+	}
+	$tabid = "";
+	if ($isalert) {
+		if (isset($_GET["tabid"])) $tabid = "#".$_GET["tabid"];
+		echo "<script>window.location.href = 'tools.php?page=nyarukolive-options&info=".urlb64encode($alertinfo).$tabid."';</script>";
+	}
+	return $isalert;
 }
 ?>

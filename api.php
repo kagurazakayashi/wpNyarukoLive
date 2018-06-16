@@ -72,7 +72,10 @@ function nyarukoLiveAPIGetStatus($table_prefix) {
     if ($tokenvif == NYARUKOLIVE_ERROR) {
         return showerror(array('code' => -12, 'msg' => '直播间状态查询失败。'));
     }
-    //TODO：检查IP地址黑名单
+    $ban = isban($islivevif["ip"]);
+    if ($ban[0]) {
+        return showerror(array('code' => -13, 'msg' => ('直播间被屏蔽。'+$ban[2])));
+    }
     //-2强停 -1停止 1播放 2强播
     $statinfo["isplaying"] = 0;
     if ($islivevif["cmode"] == 0) {
@@ -132,6 +135,10 @@ function nyarukoLiveAPIGetStatus($table_prefix) {
 function nyarukoLiveAPISendBarrage($table_prefix) {
     $bulletcomment = [];
     $userinfo = [];
+    $ban = isban($info["ip"]);
+    if ($ban[0]) {
+        return showerror(array('code' => -14, 'msg' => ('当前IP地址无法发送弹幕。'+$ban[2])));
+    }
     if (isset($_POST["liveid"])) {
         $bulletcomment["liveid"] = intval($_POST["liveid"]);
     } else {
@@ -265,5 +272,15 @@ function getip() {
         }
     }
     return $realip;
+}
+function isban($ip) {
+    global $wpdb;
+    $dbinfos = $wpdb->get_results("SELECT `id`,`note` FROM `".$wpdb->prefix."live_banip` WHERE (`ban`='".$ip."') AND (`type`=0) AND (`start`<NOW()) AND (`end`>NOW()) AND (`enable`=1) ORDER BY `start`;");
+    if (count($dbinfos) > 0) {
+        $nowban = $dbinfos[0];
+        return [true,$nowban->id,$nowban->note];
+    } else {
+        return [false];
+    }
 }
 ?>

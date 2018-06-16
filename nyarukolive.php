@@ -90,8 +90,9 @@ function nyarukoLiveShortcode($attr, $content) {
         $info["action"] = isset($dbinfo->action) ? $dbinfo->action : -1;
         $info["cmode"] = isset($dbinfo->cmode) ? $dbinfo->cmode : -1;
         $info["ip"] = isset($dbinfo->ip) ? $dbinfo->ip : "0.0.0.0";
-        if (isban($info["ip"])[0]) {
-            $errcode = [-5,"视频源被屏蔽"];
+        $ban = isban($info["ip"]);
+        if ($ban[0]) {
+            $errcode = [-5,("视频源被屏蔽。"+$ban[2])];
         } else if ($info["cmode"] == 2) {
             $errcode = [-4,"直播被中止"];
         } else if ($info["action"] != 1 && $info["cmode"] != 1) {
