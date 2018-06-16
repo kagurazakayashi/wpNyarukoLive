@@ -26,7 +26,7 @@ function nyarukoLiveHead() {
     $plugindir = plugins_url('',__FILE__);
     echo '<link href="'.NYARUKOLIVE_PLUGIN_URL.'/options_style.css" rel="stylesheet">';
     echo '<script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'/options_script.js"></script>';
-    echo '<style>#wpNyarukoPanelLogo{background-image:url("'.NYARUKOLIVE_PLUGIN_URL.'/wpNyaruko.gif");}#wpNyarukoPanelLogo:hover{background-image:url("'.NYARUKOLIVE_PLUGIN_URL.'/wpNyaruko2.gif");}</style>';
+    echo '<style>#wpNyarukoPanelLogo{background-image:url("'.NYARUKOLIVE_PLUGIN_URL.'/img/wpNyaruko.gif");}#wpNyarukoPanelLogo:hover{background-image:url("'.NYARUKOLIVE_PLUGIN_URL.'/img/wpNyaruko2.gif");}</style>';
 }
 add_action("admin_head","nyarukoLiveHead");
 // add_action("admin_notices","nyarukoLiveAlert");
@@ -250,7 +250,8 @@ function nyarukoLiveShortcode($attr, $content) {
         </tr>
     </tbody>
     </table>
-    <?php } else if ($errcode[0] != -5 && isset($attr["stoppic"])) {
+    <?php } else if ($errcode[0] != -5) {
+        if (!isset($attr["stoppic"]) || $attr["stoppic"] == "") $attr["stoppic"] = NYARUKOLIVE_PLUGIN_URL."/img/SMPTE_HD_1080P.png"; //TODO:设置空闲图片
         echo '<img id="nyarukolive_stopalertimg" src="'.$attr["stoppic"].'" alt="目前尚未直播" />';
     } else {
         echo '<div id="nyarukolive_stopalert"><h1>&emsp;</h1><h1>暂时无法观看</h1><h2>'.$errcode[1].'</h2><h2>代码：'.$errcode[0].'</h2></div>';

@@ -1,0 +1,231 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+<title>wpNyarukoLive TEST 1.3</title>
+<!-- by KagurazakaYashi -->
+<rect x="0%" y="0%" width="12.5%" height="5%"  style="fill:#000;"/>
+<rect x="12.5%" y="0%" width="12.5%" height="5%"  style="fill:#FFF;"/>
+<rect x="25%" y="0%" width="12.5%" height="5%"  style="fill:#000;"/>
+<rect x="37.5%" y="0%" width="12.5%" height="5%"  style="fill:#FFF;"/>
+<rect x="50%" y="0%" width="12.5%" height="5%"  style="fill:#000;"/>
+<rect x="62.5%" y="0%" width="12.5%" height="5%"  style="fill:#FFF;"/>
+<rect x="75%" y="0%" width="12.5%" height="5%"  style="fill:#000;"/>
+<rect x="87.5%" y="0%" width="12.5%" height="5%"  style="fill:#FFF;"/>
+
+<rect x="0%" y="5%" width="12.5%" height="30%"  style="fill:#FFF;"/>
+<rect x="12.5%" y="5%" width="12.5%" height="30%"  style="fill:#FF0;"/>
+<rect x="25%" y="5%" width="12.5%" height="30%"  style="fill:#0FF;"/>
+<rect x="37.5%" y="5%" width="12.5%" height="30%"  style="fill:#0F0;"/>
+<rect x="50%" y="5%" width="12.5%" height="30%"  style="fill:#F0F;"/>
+<rect x="62.5%" y="5%" width="12.5%" height="30%"  style="fill:#F00;"/>
+<rect x="75%" y="5%" width="12.5%" height="30%"  style="fill:#00F;"/>
+<rect x="87.5%" y="5%" width="12.5%" height="30%"  style="fill:#000;"/>
+
+<rect x="0%" y="35%" width="12.5%" height="20%"  style="fill:#C0C0C0;"/>
+<rect x="12.5%" y="35%" width="12.5%" height="20%"  style="fill:#C0C000;"/>
+<rect x="25%" y="35%" width="12.5%" height="20%"  style="fill:#00C0C0;"/>
+<rect x="37.5%" y="35%" width="12.5%" height="20%"  style="fill:#00C000;"/>
+<rect x="50%" y="35%" width="12.5%" height="20%"  style="fill:#C000C0;"/>
+<rect x="62.5%" y="35%" width="12.5%" height="20%"  style="fill:#C00000;"/>
+<rect x="75%" y="35%" width="12.5%" height="20%"  style="fill:#0000C0;"/>
+<rect x="87.5%" y="35%" width="12.5%" height="20%"  style="fill:#000;"/>
+
+<defs>
+<linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="0%">
+<stop offset="0%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="100%" style="stop-color:#FFF;stop-opacity:1"/>
+</linearGradient>
+<linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="0%">
+<stop offset="0%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="50%" style="stop-color:#F00;stop-opacity:1"/>
+<stop offset="100%" style="stop-color:#FFF;stop-opacity:1"/>
+</linearGradient>
+<linearGradient id="g3" x1="0%" y1="0%" x2="100%" y2="0%">
+<stop offset="0%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="50%" style="stop-color:#0F0;stop-opacity:1"/>
+<stop offset="100%" style="stop-color:#FFF;stop-opacity:1"/>
+</linearGradient>
+<linearGradient id="g4" x1="0%" y1="0%" x2="100%" y2="0%">
+<stop offset="0%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="50%" style="stop-color:#00F;stop-opacity:1"/>
+<stop offset="100%" style="stop-color:#FFF;stop-opacity:1"/>
+</linearGradient>
+<linearGradient id="g5" x1="0%" y1="0%" x2="100%" y2="0%">
+<stop offset="0%" style="stop-color:#00F;stop-opacity:1"/>
+<stop offset="20%" style="stop-color:#F00;stop-opacity:1"/>
+<stop offset="40%" style="stop-color:#0F0;stop-opacity:1"/>
+<stop offset="60%" style="stop-color:#00F;stop-opacity:1"/>
+<stop offset="80%" style="stop-color:#F00;stop-opacity:1"/>
+<stop offset="100%" style="stop-color:#0F0;stop-opacity:1"/>
+</linearGradient>
+<linearGradient id="g6" x1="0%" y1="0%" x2="100%" y2="0%">
+<stop offset="0%" style="stop-color:#0000C0;stop-opacity:1"/>
+<stop offset="20%" style="stop-color:#C00000;stop-opacity:1"/>
+<stop offset="40%" style="stop-color:#00C000;stop-opacity:1"/>
+<stop offset="60%" style="stop-color:#0000C0;stop-opacity:1"/>
+<stop offset="80%" style="stop-color:#C00000;stop-opacity:1"/>
+<stop offset="100%" style="stop-color:#00C000;stop-opacity:1"/>
+</linearGradient>
+<linearGradient id="la" x1="100%" y1="0%" x2="0%" y2="0%">
+<stop offset="0%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="1%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="2%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="4%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="6%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="9%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="12%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="16%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="20%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="25%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="30%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="36%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="42%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="49%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="56%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="64%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="72%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="81%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="90%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="100%" style="stop-color:#FFF;stop-opacity:1"/>
+</linearGradient>
+<linearGradient id="lb" x1="0%" y1="0%" x2="100%" y2="0%">
+<stop offset="0%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="1%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="2%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="4%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="6%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="9%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="12%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="16%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="20%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="25%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="30%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="36%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="42%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="49%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="56%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="64%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="72%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="81%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="90%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="100%" style="stop-color:#FFF;stop-opacity:1"/>
+</linearGradient>
+<linearGradient id="ra" x1="0%" y1="0%" x2="0%" y2="100%">
+<stop offset="0%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="1%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="2%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="4%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="6%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="9%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="12%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="16%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="20%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="25%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="30%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="36%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="42%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="49%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="56%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="64%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="72%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="81%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="90%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="100%" style="stop-color:#FFF;stop-opacity:1"/>
+</linearGradient>
+<linearGradient id="rb" x1="0%" y1="100%" x2="0%" y2="0%">
+<stop offset="0%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="1%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="2%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="4%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="6%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="9%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="12%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="16%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="20%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="25%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="30%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="36%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="42%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="49%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="56%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="64%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="72%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="81%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="90%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="100%" style="stop-color:#FFF;stop-opacity:1"/>
+</linearGradient>
+<linearGradient id="pa" x1="100%" y1="0" x2="0" y2="100%">
+<stop offset="0%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="1%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="2%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="4%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="6%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="9%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="12%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="16%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="20%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="25%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="30%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="36%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="42%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="49%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="56%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="64%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="72%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="81%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="90%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="100%" style="stop-color:#FFF;stop-opacity:1"/>
+</linearGradient>
+<linearGradient id="pb" x1="0" y1="0" x2="100%" y2="100%">
+<stop offset="0%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="1%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="2%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="4%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="6%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="9%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="12%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="16%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="20%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="25%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="30%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="36%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="42%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="49%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="56%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="64%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="72%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="81%" style="stop-color:#FFF;stop-opacity:1"/>
+<stop offset="90%" style="stop-color:#000;stop-opacity:1"/>
+<stop offset="100%" style="stop-color:#FFF;stop-opacity:1"/>
+</linearGradient>
+</defs>
+<rect x="0" y="55%" width="12.5%" height="5%" style="fill:#FFFFFF;"/>
+<rect x="0" y="60%" width="12.5%" height="5%" style="fill:#F5F5F5;"/>
+<rect x="0" y="65%" width="12.5%" height="5%" style="fill:#DCDCDC;"/>
+<rect x="0" y="70%" width="12.5%" height="5%" style="fill:#D3D3D3;"/>
+<rect x="0" y="75%" width="12.5%" height="5%" style="fill:#C0C0C0;"/>
+<rect x="12.5%" y="55%" width="75%" height="2%" fill="url(#g6)" />
+<rect x="12.5%" y="57%" width="75%" height="3%" fill="url(#g5)" />
+<rect x="12.5%" y="60%" width="75%" height="2%" fill="#808080" />
+<rect x="12.5%" y="62%" width="75%" height="3%" fill="url(#g1)" />
+<rect x="12.5%" y="65%" width="75%" height="2%" fill="#F00" />
+<rect x="12.5%" y="67%" width="75%" height="3%" fill="url(#g2)" />
+<rect x="12.5%" y="70%" width="75%" height="2%" fill="#0F0" />
+<rect x="12.5%" y="72%" width="75%" height="3%" fill="url(#g3)" />
+<rect x="12.5%" y="75%" width="75%" height="2%" fill="#00F" />
+<rect x="12.5%" y="77%" width="75%" height="3%" fill="url(#g4)" />
+<rect x="87.5%" y="55%" width="12.5%" height="5%" style="fill:#C0C0C0;"/>
+<rect x="87.5%" y="60%" width="12.5%" height="5%" style="fill:#A9A9A9;"/>
+<rect x="87.5%" y="65%" width="12.5%" height="5%" style="fill:#808080;"/>
+<rect x="87.5%" y="70%" width="12.5%" height="5%" style="fill:#696969;"/>
+<rect x="87.5%" y="75%" width="12.5%" height="5%" style="fill:#000000;"/>
+
+<rect x="0%" y="80%" width="25%" height="20%" fill="url(#pa)" />
+<rect x="25%" y="80%" width="12.5%" height="20%" fill="url(#la)" />
+<rect x="37.5%" y="80%" width="12.5%" height="20%" fill="url(#lb)" />
+<rect x="50%" y="80%" width="25%" height="10%" fill="url(#rb)" />
+<rect x="50%" y="90%" width="25%" height="10%" fill="url(#ra)" />
+<rect x="75%" y="80%" width="25%" height="20%" fill="url(#pb)" />
+
+<rect x="0%" y="0%" width="100%" height="100%" stroke="#000" fill="none" stroke-width="1" />
+<rect x="0%" y="0%" width="100%" height="100%" stroke-dasharray="100,100" stroke="#00F" fill="none" stroke-width="4" />
+<rect x="0%" y="0%" width="100%" height="100%" stroke-dasharray="100,100" stroke="#FF0" fill="none" stroke-width="1" />
+</svg>

@@ -422,10 +422,10 @@
     display: inline-block;
     width: 320px;
     height: 59px;
-    background-image: url("images/wpNyaruko.gif");
+    background-image: url("img/wpNyaruko.gif");
     background-size: 320px 59px;
 }
 #wpNyarukoPanelLogo:hover {
-    background-image: url("images/wpNyaruko2.gif");
+    background-image: url("img/wpNyaruko2.gif");
 }
 /* PanelBox] */
