@@ -8,18 +8,16 @@ date_default_timezone_set('PRC');
 header('Content-Type: application/json; charset=utf-8');
 header('X-Powered-By: wpNyarukoLive');
 nyarukoLiveAPI($table_prefix);
-// api: 1=发送弹幕
+// api: 1=发送弹幕 2=获取播放状态和弹幕
 function nyarukoLiveAPI($table_prefix) {
     if (isset($_POST["api"])) {
         $api = intval($_POST["api"]);
         $array = null;
         switch ($api) {
             case 1:
-                // $array = array();
                 $array = nyarukoLiveAPISendBarrage($table_prefix);
                 break;
             case 2:
-                // $array = array();
                 $array = nyarukoLiveAPIGetStatus($table_prefix);
                 break;
             default:

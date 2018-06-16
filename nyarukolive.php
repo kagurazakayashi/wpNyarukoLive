@@ -90,8 +90,8 @@ function nyarukoLiveShortcode($attr, $content) {
         $info["action"] = isset($dbinfo->action) ? $dbinfo->action : -1;
         $info["cmode"] = isset($dbinfo->cmode) ? $dbinfo->cmode : -1;
         $info["ip"] = isset($dbinfo->ip) ? $dbinfo->ip : "0.0.0.0";
-        if ($info["ip"] == "0.0.0.0") {
-            $errcode = [-5,"视频源被屏蔽"]; //TODO：进行一次黑名单查询
+        if (isban($info["ip"])[0]) {
+            $errcode = [-5,"视频源被屏蔽"];
         } else if ($info["cmode"] == 2) {
             $errcode = [-4,"直播被中止"];
         } else if ($info["action"] != 1 && $info["cmode"] != 1) {
@@ -186,7 +186,7 @@ function nyarukoLiveShortcode($attr, $content) {
             <tr><td colspan="2" width="100%"<?php if ($expguestreg) echo " style='display:none;'"; ?>>使用我自己的账户：<br/><a>登录/注册(暂未开放)</a></td></tr>
         </tbody>
         </table>
-        <script>loadguestname();</script>
+        <script>swmenu(1);loadguestname();</script>
         <table id="nyarukolive_menu">
         <tbody>
             <tr>
@@ -251,11 +251,21 @@ function nyarukoLiveShortcode($attr, $content) {
     </tbody>
     </table>
     <?php } else if ($errcode[0] != -5) {
-        if (!isset($attr["stoppic"]) || $attr["stoppic"] == "") $attr["stoppic"] = NYARUKOLIVE_PLUGIN_URL."/img/SMPTE_HD_1080P.png"; //TODO:设置空闲图片
+        if (!isset($attr["stoppic"]) || $attr["stoppic"] == "") $attr["stoppic"] = NYARUKOLIVE_PLUGIN_URL."/img/SMPTE_HD_1080P.png";
         echo '<img id="nyarukolive_stopalertimg" src="'.$attr["stoppic"].'" alt="目前尚未直播" />';
     } else {
         echo '<div id="nyarukolive_stopalert"><h1>&emsp;</h1><h1>暂时无法观看</h1><h2>'.$errcode[1].'</h2><h2>代码：'.$errcode[0].'</h2></div>';
     }
     echo '</div><script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'live_script.js"></script>';
+}
+function isban($ip) {
+    global $wpdb;
+    $dbinfos = $wpdb->get_results("SELECT `id`,`note` FROM `".$wpdb->prefix."live_banip` WHERE (`ban`='".$ip."') AND (`type`=0) AND (`start`<NOW()) AND (`end`>NOW()) AND (`enable`=1) ORDER BY `start`;");
+    if (count($dbinfos) > 0) {
+        $nowban = $dbinfos[0];
+        return [true,$nowban->id,$nowban->note];
+    } else {
+        return [false];
+    }
 }
 add_shortcode('nyarukolive', 'nyarukoLiveShortcode');

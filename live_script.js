@@ -251,8 +251,17 @@ function sendBulletCommentChk() {
         swmenu(1,true);
     }
 }
-function changemodebtn() {
-
+function changemodebtn(tomode) {
+    var locationhref = window.location.href;
+    for (let i = 0; i <= 3; i++) {
+        locationhref = locationhref.replace(("&liveplayermode="+i), "");
+        locationhref = locationhref.replace(("?liveplayermode="+i), "");
+    }
+    var linkchar = "?";
+    if (locationhref.indexOf(linkchar) > -1) {
+        linkchar = "&";
+    }
+    window.location.href = locationhref + linkchar + "liveplayermode=" + tomode;
 }
 function getStatus() {
     if (nyarukolive_config["liveid"] <= 0) return;
