@@ -10,14 +10,53 @@ function nyarukoliveGetOptions() {
 	}
 	return $wpNyarukoLiveOption;
 }
+//获取屏蔽列表
+function nyarukoliveGetBan() {
+	global $wpdb;
+	$infos = [];
+	$dbinfos = $wpdb->get_results("SELECT * FROM `".$wpdb->prefix."live_ban` ORDER BY `start` DESC LIMIT 1000;");
+	if (count($dbinfos) == 0) {
+		echo "<center><h4>目前没有被屏蔽的来源</h4></center>";
+	}
+	foreach ($dbinfos as $dbinfo) {
+		$info["id"] = isset($dbinfo->id) ? $dbinfo->id : -1;
+		$info["type"] = isset($dbinfo->type) ? $dbinfo->type : 0;
+		if ($info["type"] == 0) {
+			$info["type"] = "IP地址";
+		}
+		$info["ban"] = isset($dbinfo->ban) ? $dbinfo->ban : "";
+		$info["start"] = isset($dbinfo->start) ? $dbinfo->start : "";
+		$info["end"] = isset($dbinfo->end) ? $dbinfo->end : "";
+		$info["enable"] = isset($dbinfo->enable) ? $dbinfo->enable : 1;
+		$info["note"] = isset($dbinfo->note) ? $dbinfo->note : "无";
+		array_push($infos,$info);
+	}
+	foreach ($infos as $info) {
+		echo '<tr><th scope="row">'.$info["id"].'</th>';
+		echo '<td>'.$info["type"].'</td>';
+		echo '<td>'.$info["ban"].'</td>';
+		echo '<td>'.$info["start"].'</td>';
+		echo '<td>'.$info["end"].'</td>';
+		$banenable = "O N";
+		if ($info["enable"] == 0) $banenable = "OFF";
+		echo '<td><button type="button" onclick="">'.$banenable.'</button></td>';
+		echo '<td>'.$info["note"].'</td>';
+		echo '<td><button type="button" onclick="">删除</button></td>';
+	}
+}
 //获得当前弹幕
-function nyarukoliveDanmaku() {
+function nyarukoliveGetDanmaku() {
 	global $wpdb;
 	$infos = [];
 	if (isset($_GET["nyamode"]) && $_GET["nyamode"] == "mddmmgr" && isset($_GET["liveid"])) {
 		$liveid = intval($_GET["liveid"]);
-		echo "正在管理直播ID为 ".$liveid." 的弹幕列表：";
-		$dbinfos = $wpdb->get_results("SELECT * FROM `".$wpdb->prefix."live_commenting` ORDER BY `date` DESC LIMIT 1000;");
+		$dbinfos = $wpdb->get_results("SELECT * FROM `".$wpdb->prefix."live_commenting` WHERE `liveid`=".$liveid." ORDER BY `date` DESC LIMIT 1000;");
+		if (count($dbinfos) == 0) {
+			echo "<center><h4>ID为 ".$liveid." 的直播间目前还没有弹幕</h4></center>";
+		} else {
+			echo "<center><h4>正在管理直播ID为 ".$liveid." 的弹幕列表</h4></center>";
+		}
+		echo '直播间弹幕开关：<button type="button" onclick="">O N</button>';
 		foreach ($dbinfos as $dbinfo) {
 			$info["id"] = isset($dbinfo->id) ? $dbinfo->id : -1;
 			$info["liveid"] = isset($dbinfo->liveid) ? $dbinfo->liveid : -1;
@@ -30,12 +69,18 @@ function nyarukoliveDanmaku() {
 			$info["date"] = isset($dbinfo->date) ? $dbinfo->date : "";
 			$info["content"] = isset($dbinfo->content) ? $dbinfo->content : "";
 			$info["style"] = isset($dbinfo->style) ? $dbinfo->style : "0:0";
+			if ($info["style"] == "0:0") {
+				$info["style"] = "普通";
+			}
 			$info["ua"] = isset($dbinfo->ua) ? $dbinfo->ua : "";
 			$info["wpuserid"] = isset($dbinfo->wpuserid) ? $dbinfo->wpuserid : 0;
+			if ($info["wpuserid"] == 0) {
+				$info["wpuserid"] = "游客";
+			}
 			array_push($infos,$info);
 		}
 		foreach ($infos as $info) {
-			echo '<tr><th scope="row">'.$info["id"].'<br/>'.$info["liveid"].'</th>';
+			echo '<tr><th scope="row">'.$info["id"].'</th>';
 			echo '<td><button type="button" onclick="prompt(\'当前会话\',\''.$info["token"].'\');">当前</button><br/><button type="button" onclick="prompt(\'浏览器会话\',\''.$info["browsertoken"].'\');">浏览器</button></td>';
 			echo '<td>'.$info["name"].'<br/>'.$info["email"].'<br/>'.$info["url"].'</td>';
 			echo '<td>'.$info["ip"].'</td>';
@@ -46,13 +91,18 @@ function nyarukoliveDanmaku() {
 			echo '<td>'.$info["wpuserid"].'</td>';
 			echo '<td><button type="button" onclick="">删除</button></td>';
 		}
+	} else {
+		echo "<center><h4>请在「推流记录」中选择一个直播流后面的弹幕「管理」按钮</h4></center>";
 	}
 }
 //获得正在进行中的直播
-function nyarukoliveNowLive() {
+function nyarukoliveGetNowLive() {
     global $wpdb;
     $infos = [];
-    $dbinfos = $wpdb->get_results("SELECT * FROM `".$wpdb->prefix."live_channels` ORDER BY `time` DESC;");
+	$dbinfos = $wpdb->get_results("SELECT * FROM `".$wpdb->prefix."live_channels` ORDER BY `time` DESC LIMIT 1000;");
+	if (count($dbinfos) == 0) {
+		echo "<center><h4>目前还没有正在进行的直播记录，请通过回调接口注册直播</h4></center>";
+	}
 	$nonetext = "(未知)";
 	foreach ($dbinfos as $dbinfo) {
 		$info["liveid"] = isset($dbinfo->liveid) ? $dbinfo->liveid : $nonetext;
@@ -171,17 +221,16 @@ function nyarukoliveOptionsPage() {
 			<th scope="col">弹幕</th>
 			<th scope="col">记录</th>
 			</tr>
-			<?php nyarukoliveNowLive(); ?>
+			<?php nyarukoliveGetNowLive(); ?>
 		</tbody>
 		</table>
 	</div>
 	<div class="wpNyarukoOptionTab" id="wpNyarukoOptionTab3">
 		<h2>弹幕管理</h2>
-		<p>在「推流记录」中选择一个直播流后面的「弹幕管理」。</p>
 		<table width="100%" border="1" cellspacing="1" cellpadding="1" class="wpNyarukoOptionInfotable">
 		<tbody>
 			<tr>
-			<th scope="col">弹幕序号<br/>直播序号</th>
+			<th scope="col">弹幕序号</th>
 			<th scope="col">会话编码</th>
 			<th scope="col">发送者<br/>用户信息</th>
 			<th scope="col">发送者IP</th>
@@ -192,7 +241,7 @@ function nyarukoliveOptionsPage() {
 			<th scope="col">WP<br/>用户ID</th>
 			<th scope="col">弹幕</th>
 			</tr>
-			<?php nyarukoliveDanmaku(); ?>
+			<?php nyarukoliveGetDanmaku(); ?>
 		</tbody>
 		</table>
 	</div>
@@ -206,12 +255,12 @@ function nyarukoliveOptionsPage() {
 			<th scope="col">类型</th>
 			<th scope="col">条件</th>
 			<th scope="col">起始时间↓</th>
-			<th scope="col">结束时间↓</th>
+			<th scope="col">结束时间</th>
 			<th scope="col">执行</th>
 			<th scope="col">原因</th>
 			<th scope="col">记录</th>
 			</tr>
-			<?php //nyarukoliveNowLive(); ?>
+			<?php nyarukoliveGetBan(); ?>
 		</tbody>
 		</table>
 	</div>

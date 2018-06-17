@@ -275,7 +275,7 @@ function getip() {
 }
 function isban($ip) {
     global $wpdb;
-    $dbinfos = $wpdb->get_results("SELECT `id`,`note` FROM `".$wpdb->prefix."live_banip` WHERE (`ban`='".$ip."') AND (`type`=0) AND (`start`<NOW()) AND (`end`>NOW()) AND (`enable`=1) ORDER BY `start`;");
+    $dbinfos = $wpdb->get_results("SELECT `id`,`note` FROM `".$wpdb->prefix."live_ban` WHERE (`ban`='".$ip."') AND (`type`=0) AND (`start`<NOW()) AND (`end`>NOW()) AND (`enable`=1) ORDER BY `start`;");
     if (count($dbinfos) > 0) {
         $nowban = $dbinfos[0];
         return [true,$nowban->id,$nowban->note];
