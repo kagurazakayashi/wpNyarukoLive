@@ -41,7 +41,7 @@ function nyarukoliveGetBan() {
 		if ($info["enable"] == 0) $banenable = "OFF";
 		echo '<td><button type="button" onclick="">'.$banenable.'</button></td>';
 		echo '<td>'.$info["note"].'</td>';
-		echo '<td><button type="button" onclick="">删除</button></td>';
+		echo '<td><button type="button" onclick="wpNyarukoOptionCMgBanDelete('.$info["id"].');">删除</button></td>';
 	}
 }
 //获得当前弹幕
@@ -89,7 +89,7 @@ function nyarukoliveGetDanmaku() {
 			echo '<td>'.$info["style"].'</td>';
 			echo '<td><button type="button" onclick="prompt(\'浏览器 UA\',\''.$info["ua"].'\');">查看</button></td>';
 			echo '<td>'.$info["wpuserid"].'</td>';
-			echo '<td><button type="button" onclick="">删除</button></td>';
+			echo '<td><button type="button" onclick="wpNyarukoOptionCMgDanmakuDelete('.$info["id"].')；">删除</button></td>';
 		}
 	} else {
 		echo "<center><h4>请在「推流记录」中选择一个直播流后面的弹幕「管理」按钮</h4></center>";
@@ -279,6 +279,19 @@ function wpNyarukoCModeGet($nyamode) {
 		$alertinfo = "将 ".$liveid." 号直播间播放状态设置为 ".$cmode;
     } else if ($nyamode == "mddmmgr" && isset($_GET["liveid"])) {
 		$isalert = false;
+	} else if ($nyamode == "mgdellive" && isset($_GET["liveid"])) {
+		$liveid = intval($_GET["liveid"]);
+		$dbinfos = $wpdb->get_results("DELETE FROM `".$wpdb->prefix."live_commenting` WHERE `".$wpdb->prefix."live_commenting`.`liveid`=".$liveid.";");
+		$dbinfos2 = $wpdb->get_results("DELETE FROM `".$wpdb->prefix."live_channels` WHERE `".$wpdb->prefix."live_channels`.`liveid`=".$liveid.";");
+		$alertinfo = "已删除 ".$liveid." 号直播间及其弹幕";
+	} else if ($nyamode == "mgdeldanmaku" && isset($_GET["danmakuid"])) {
+		$danmakuid = intval($_GET["danmakuid"]);
+		$dbinfos = $wpdb->get_results("DELETE FROM `".$wpdb->prefix."live_commenting` WHERE `".$wpdb->prefix."live_commenting`.`id`=".$danmakuid.";");
+		$alertinfo = "已删除序号为 ".$liveid." 的弹幕";
+	} else if ($nyamode == "mgdelban" && isset($_GET["banid"])) {
+		$banid = intval($_GET["banid"]);
+		$dbinfos = $wpdb->get_results("DELETE FROM `".$wpdb->prefix."live_ban` WHERE `".$wpdb->prefix."live_ban`.`id`=".$banid.";");
+		$alertinfo = "已删除序号为 ".$liveid." 的屏蔽项";
 	}
 	$tabid = "";
 	if ($isalert) {
