@@ -1,5 +1,6 @@
 <?php
-$starttime = explode(' ',microtime());
+// error_reporting(E_ALL); 
+// ini_set('display_errors', '1');
 include_once "../../../nyarukolive-config.php";
 define("NYARUKOLIVE_ERROR", "[NYA-L+ERR]");
 define("NYARUKOLIVE_UPDATE_FREQUENCY", 5);
@@ -10,6 +11,7 @@ header('X-Powered-By: wpNyarukoLive');
 nyarukoLiveAPI($table_prefix);
 // api: 1=发送弹幕 2=获取播放状态和弹幕
 function nyarukoLiveAPI($table_prefix) {
+    $starttime = explode(' ',microtime());
     if (isset($_POST["api"])) {
         $api = intval($_POST["api"]);
         $array = null;
@@ -39,6 +41,7 @@ function nyarukoLiveAPI($table_prefix) {
     } else {
         header('HTTP/1.1 403 Forbidden');
         die();
+        // die(json_encode(array('code' => -403, 'msg' => 'Forbidden')));
     }
 }
 function nyarukoLiveAPIGetStatus($table_prefix) {
@@ -72,9 +75,11 @@ function nyarukoLiveAPIGetStatus($table_prefix) {
     if ($tokenvif == NYARUKOLIVE_ERROR) {
         return showerror(array('code' => -12, 'msg' => '直播间状态查询失败。'));
     }
-    $ban = isban($islivevif["ip"]);
+    $ban = isban($islivevif["ip"],$table_prefix);
     if ($ban[0]) {
-        return showerror(array('code' => -13, 'msg' => ('直播间被屏蔽。'+$ban[2])));
+        $binfo = "";
+        if ($ban[2]) $binfo = $ban[2];
+        return showerror(array('code' => -13, 'msg' => ('直播间被屏蔽。'+$binfo)));
     }
     //-2强停 -1停止 1播放 2强播
     $statinfo["isplaying"] = 0;
@@ -135,7 +140,7 @@ function nyarukoLiveAPIGetStatus($table_prefix) {
 function nyarukoLiveAPISendBarrage($table_prefix) {
     $bulletcomment = [];
     $userinfo = [];
-    $ban = isban($info["ip"]);
+    $ban = isban($info["ip"],$table_prefix);
     if ($ban[0]) {
         return showerror(array('code' => -14, 'msg' => ('当前IP地址无法发送弹幕。'+$ban[2])));
     }
@@ -273,9 +278,8 @@ function getip() {
     }
     return $realip;
 }
-function isban($ip) {
-    global $wpdb;
-    $dbinfos = $wpdb->get_results("SELECT `id`,`note` FROM `".$wpdb->prefix."live_ban` WHERE (`ban`='".$ip."') AND (`type`=0) AND (`start`<NOW()) AND (`end`>NOW()) AND (`enable`=1) ORDER BY `start`;");
+function isban($ip,$table_prefix) {
+    $dbinfos = nyalivedb("SELECT `id`,`note` FROM `".$table_prefix."live_ban` WHERE (`ban`='".$ip."') AND (`type`=0) AND (`start`<NOW()) AND (`end`>NOW()) AND (`enable`=1) ORDER BY `start`;",false);
     if (count($dbinfos) > 0) {
         $nowban = $dbinfos[0];
         return [true,$nowban->id,$nowban->note];
