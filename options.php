@@ -29,6 +29,7 @@ function nyarukoliveGetBan() {
 		$info["end"] = isset($dbinfo->end) ? $dbinfo->end : "";
 		$info["enable"] = isset($dbinfo->enable) ? $dbinfo->enable : 1;
 		$info["note"] = isset($dbinfo->note) ? $dbinfo->note : "无";
+		if ($info["note"] == "") $info["note"] = "无";
 		array_push($infos,$info);
 	}
 	foreach ($infos as $info) {
@@ -37,9 +38,9 @@ function nyarukoliveGetBan() {
 		echo '<td>'.$info["ban"].'</td>';
 		echo '<td>'.$info["start"].'</td>';
 		echo '<td>'.$info["end"].'</td>';
-		$banenable = "O N";
+		$banenable = "ON";
 		if ($info["enable"] == 0) $banenable = "OFF";
-		echo '<td><button type="button" onclick="">'.$banenable.'</button></td>';
+		echo '<td><button type="button" onclick="wpNyarukoOptionCMgBanEnable('.$info["id"].','.$info["enable"].');">'.$banenable.'</button></td>';
 		echo '<td>'.$info["note"].'</td>';
 		echo '<td><button type="button" onclick="wpNyarukoOptionCMgBanDelete('.$info["id"].');">删除</button></td>';
 	}
@@ -56,7 +57,7 @@ function nyarukoliveGetDanmaku() {
 		} else {
 			echo "<center><h4>正在管理直播ID为 ".$liveid." 的弹幕列表</h4></center>";
 		}
-		echo '直播间弹幕开关：<button type="button" onclick="">O N</button>';
+		echo '直播间弹幕开关：<button type="button" onclick="">ON</button>';
 		foreach ($dbinfos as $dbinfo) {
 			$info["id"] = isset($dbinfo->id) ? $dbinfo->id : -1;
 			$info["liveid"] = isset($dbinfo->liveid) ? $dbinfo->liveid : -1;
@@ -261,6 +262,18 @@ function nyarukoliveOptionsPage() {
 			<th scope="col">记录</th>
 			</tr>
 			<?php nyarukoliveGetBan(); ?>
+			<tr>
+			<td>新建</td>
+			<td><select name="type" id="wpNyarukoBanNewType">
+			<option value="0" selected="selected">IP地址</option>
+			</select></td>
+			<td><input type="text" name="ban" id="wpNyarukoBanNewBan" value="127.0.0.2"></td>
+			<td><?php echo date('Y-m-d h:i:s',time()); ?></td>
+			<td><input type="text" name="end" id="wpNyarukoBanNewEnd" value="2099-12-30 23:59:59"></td>
+			<td><input name="checkbox" type="checkbox" id="wpNyarukoBanNewEnable" checked="checked"></td>
+			<td><input type="text" name="note" id="wpNyarukoBanNewNote"></td>
+			<td><button type="button" onclick="wpNyarukoOptionCMgBanNew();">新建</button></td>
+			</tr>
 		</tbody>
 		</table>
 	</div>
@@ -292,6 +305,20 @@ function wpNyarukoCModeGet($nyamode) {
 		$banid = intval($_GET["banid"]);
 		$dbinfos = $wpdb->get_results("DELETE FROM `".$wpdb->prefix."live_ban` WHERE `".$wpdb->prefix."live_ban`.`id`=".$banid.";");
 		$alertinfo = "已删除序号为 ".$liveid." 的屏蔽项";
+	} else if ($nyamode == "mgaddban" && isset($_GET["ban"]) && isset($_GET["end"])) {
+		$banarr["type"] = intval($_GET["type"]);
+		$banarr["ban"] = "'".htmlentities($_GET["ban"])."'";
+		$banarr["end"] = "'".htmlentities($_GET["end"])."'";
+		$banarr["enable"] = intval($_GET["enable"]);
+		$banarr["note"] = "'".htmlentities($_GET["note"])."'";
+		$dbinfos = $wpdb->get_results("INSERT INTO `".$wpdb->prefix."live_ban` (`type`, `ban`, `end`, `enable`, `note`) VALUES (".implode(",", $banarr).");");
+		$alertinfo = "已将 ".$banarr["ban"]." 加入黑名单";
+	} else if ($nyamode == "mgenableban" && isset($_GET["banid"]) && isset($_GET["enable"])) {
+		$banid = intval($_GET["banid"]);
+		$enable = intval($_GET["enable"]);
+		$enablestr = ($enable == "1") ? "启用" : "禁用";
+		$dbinfos = $wpdb->get_results("UPDATE `".$wpdb->prefix."live_ban` SET `enable` = ".$enable." WHERE `".$wpdb->prefix."live_ban`.`id` = ".$banid.";");
+		$alertinfo = "已 ".$enablestr." 序号为 ".$banid." 的屏蔽项";
 	}
 	$tabid = "";
 	if ($isalert) {

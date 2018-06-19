@@ -37,3 +37,13 @@ function wpNyarukoOptionCMgBanDelete(banid) {
 function wpNyarukoOptionCMgLiveDanmaku(liveid) {
     window.location.href = 'tools.php?page=nyarukolive-options&nyamode=mddmmgr&liveid='+liveid+'&tabid=3#3';
 }
+function wpNyarukoOptionCMgBanNew() {
+    var enable = "0";
+    if (document.getElementById("wpNyarukoBanNewEnable").checked) enable = "1";
+    window.location.href = 'tools.php?page=nyarukolive-options&nyamode=mgaddban&type='+document.getElementById("wpNyarukoBanNewType").value+'&ban='+document.getElementById("wpNyarukoBanNewBan").value+'&end='+document.getElementById("wpNyarukoBanNewEnd").value+'&enable='+enable+'&note='+document.getElementById("wpNyarukoBanNewNote").value.replace(/&/g,'').replace(/\?/g,'').replace(/=/g,'')+'&tabid=4';
+}
+function wpNyarukoOptionCMgBanEnable(banid,enable) {
+    var nenable = "0";
+    if (enable == "0") nenable = "1";
+    window.location.href = 'tools.php?page=nyarukolive-options&nyamode=mgenableban&banid='+banid+'&enable='+nenable+'&tabid=4';
+}
