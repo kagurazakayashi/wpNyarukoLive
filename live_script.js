@@ -13,6 +13,7 @@ var player = null;
 var ready = false;
 var playing = false;
 var serplaying = 0;
+var nyarukolive_debug = 0;
 var nyarukolive_playermode = 0;
 var nyarukolive_flv = "";
 var nyarukolive_hls = "";
@@ -279,8 +280,9 @@ function getStatus() {
         "email":guestinfo[1],
         "browsertoken":nyarukolive_config["browsertoken"]
     };
+    if (nyarukolive_debug > 1) console.log("↑",gstatus);
     $.post(nyarukolive_config["api"],gstatus,function(result){
-        // console.log("result",result);
+        if (nyarukolive_debug > 1) console.log("↓",result);
         if (result && result != "") {
             var dmjson = null;
             if (typeof(result) == "object") {
@@ -288,11 +290,16 @@ function getStatus() {
             } else {
                 dmjson = $.parseJSON(result);
             }
-            
             if (serplaying == 0) {
                 serplaying = dmjson.isplaying;
             } else if ((serplaying < 0 && dmjson.isplaying > 0) || (serplaying > 0 && dmjson.isplaying < 0)) {
                 console.log("[wpNyarukoLive] Reloading...");
+                if (nyarukolive_debug > 0) {
+                    nyarukolive_config["liveid"] = -2;
+                    var alertxt = "【△】直播状态发生改变！".Date();
+                    document.title = alertxt;
+                    alert(alertxt);
+                }
                 location.reload();
             }
             if (dmjson.code == 0 && dmjson.isplaying > 0 && dmjson.liveid == nyarukolive_config["liveid"]) {
@@ -305,8 +312,11 @@ function getStatus() {
                 nyarukolive_barragecache = dmjson.barrages;
             }
         } else {
-            console.log("状态检查失败。");
+            console.log("状态检查失败！");
         }
+    }).error(function(err){
+        console.log("状态检查失败。");
+        if (nyarukolive_debug > 0) console.log(err.responseText);
     });
 }
 function addbarrage() {
@@ -366,7 +376,9 @@ function sendBulletComment(iskey=false) {
         "token":nyarukolive_config["token"],
         "browsertoken":nyarukolive_config["browsertoken"]
     };
+    if (nyarukolive_debug > 1) console.log("↑",bulletcomment);
     $.post(nyarukolive_config["api"],bulletcomment,function(result){
+        if (nyarukolive_debug > 1) console.log("↓",result);
         if (result && result != "") {
             var nrjson = null;
             if (typeof(result) == "object") {
@@ -390,6 +402,9 @@ function sendBulletComment(iskey=false) {
         } else {
             sendBulletCommentFail("");
         }
+    }).error(function(err){
+        console.log("弹幕提交失败。");
+        if (nyarukolive_debug > 0) console.log(err.responseText);
     });
     btndanmusent.style.display = "none";
     btndanmusentwait.innerText = nyarukolive_update_frequency+" ";
@@ -632,5 +647,10 @@ function nyarukolive_sendDanMu(textval,selfsend=false) {
         $(this).remove();
         nyarukolive_dmObj.remove($(this));
     });
+}
+function livedebug(level=1) {
+    var nyarukolive_livetitle = document.getElementById("nyarukolive_livetitle");
+    nyarukolive_livetitle.innerText += " (调试模式)"
+    nyarukolive_debug = level;
 }
 console.log("[wpNyarukoLive] Loaded.");

@@ -132,7 +132,7 @@ function nyarukoLiveShortcode($attr, $content) {
     <tbody>
         <tr>
         <td width="50" align="center"><img class="nyarukolive_footbariconbtn" src="<?php echo NYARUKOLIVE_PLUGIN_URL ?>lib/baseline-live_tv-24px.svg" /></td>
-        <td align="left"><?php 
+        <td align="left" id="nyarukolive_livetitle"><?php 
         if ($errcode[0] == 0) {
             if (isset($attr["title"])) {
                 echo $attr["title"];
