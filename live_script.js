@@ -55,11 +55,11 @@ function nyarukolive_loadconfig(config) {
     return 0;
 }
 function nyarukolive_selectmode(nmode) {
-    mode = nmode;
-    if (mode == 0) {
+    nyarukolive_playermode = nmode;
+    if (nyarukolive_playermode == 0) {
         autoselectmode();
-    } else if (mode == 1) {
-        console.log("flv mode",nyarukolive_flv);
+    } else if (nyarukolive_playermode == 1) {
+        console.log("[wpNyarukoLive] flv mode",nyarukolive_flv);
         player = flvjs.createPlayer({
             type: 'flv',
             url: nyarukolive_flv
@@ -67,17 +67,17 @@ function nyarukolive_selectmode(nmode) {
         player.attachMediaElement(video);
         player.load();
         nyarukolive_videoready();
-    } else if (mode == 2) {
-        console.log("hls mode");
+    } else if (nyarukolive_playermode == 2) {
+        console.log("[wpNyarukoLive] hls mode");
         player = new Hls();
         player.loadSource(nyarukolive_hls);
         player.attachMedia(video);
         player.on(Hls.Events.MANIFEST_PARSED,function() {
             nyarukolive_videoready();
         });
-    } else if (mode == 3) {
-        mode = 3;
-        console.log("hls+ mode");
+    } else if (nyarukolive_playermode == 3) {
+        nyarukolive_playermode = 3;
+        console.log("[wpNyarukoLive] hls+ mode");
         videosrc.src = nyarukolive_hls;
         player = videojs('nyarukolive_video',{
             bigPlayButton : false,
@@ -100,7 +100,7 @@ function nyarukolive_playpausebtn() {
         if (playing) {
             console.log("[wpNyarukoLive] Pause.");
             // pauseboxi.style.display='block';
-            if (mode == 2) {
+            if (nyarukolive_playermode == 2) {
                 video.pause();
             } else {
                 player.pause();
@@ -111,7 +111,7 @@ function nyarukolive_playpausebtn() {
         } else {
             console.log("play");
             // pauseboxi.style.display='none';
-            if (mode == 2) {
+            if (nyarukolive_playermode == 2) {
                 video.play();
             } else {
                 player.play();
@@ -265,6 +265,10 @@ function changemodebtn(tomode) {
     window.location.href = locationhref + linkchar + "liveplayermode=" + tomode;
 }
 function getStatus() {
+    if (nyarukolive_debug > 1) {
+        var ndate = new Date();
+        console.log("[wpNyarukoLive] "+ndate.toLocaleTimeString());
+    }
     if (nyarukolive_config["liveid"] <= 0) return;
     var guestinfo = loadguestname(true);
     var blockbullet = 1;
@@ -296,7 +300,8 @@ function getStatus() {
                 console.log("[wpNyarukoLive] Reloading...");
                 if (nyarukolive_debug > 0) {
                     nyarukolive_config["liveid"] = -2;
-                    var alertxt = "【△】直播状态发生改变！".Date();
+                    var ndate = new Date();
+                    var alertxt = "[wpNyarukoLive] 【△】直播状态发生改变！ "+ndate.toLocaleTimeString();
                     document.title = alertxt;
                     alert(alertxt);
                 }
@@ -560,9 +565,9 @@ function setbrowsertoken() {
     }
 }
 function wpnyarukoliveinit() {
+    console.log("[wpNyarukoLive] Loading Video ...OK");
     setbrowsertoken();
     if (typeof(nyarukolive_config) == "undefined") nyarukolive_error(1);
-    nyarukolive_lconf = nyarukolive_loadconfig(nyarukolive_config);
     if (nyarukolive_lconf == 0) {
         if (chkhttps()) {
             getStatus();
@@ -579,10 +584,11 @@ function wpnyarukoliveinit() {
     } else {
         nyarukolive_error(nyarukolive_lconf);
     }
-    console.log("Loading Video ...OK");
+    console.log("[wpNyarukoLive] Loading Video ...OK");
     removeWpNyarukoNPlayer();
 }
-if (typeof(yashitheme) != "undefined" && yashitheme == "wpnyarukof") {
+nyarukolive_lconf = nyarukolive_loadconfig(nyarukolive_config);
+if (typeof(yashitheme) != "undefined" && yashitheme == "wpnyarukof" && nyarukolive_playermode == 3) {
     if (wpnyarukolive_ready) {
         wpnyarukolive_ready = false;
     } else {
