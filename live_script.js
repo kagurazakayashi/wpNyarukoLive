@@ -105,9 +105,9 @@ function nyarukolive_playpausebtn() {
             } else {
                 player.pause();
             }
-            pauseboxi.style.display='block';
-            if (isfullScreen) fsiconbtn.style.display='block';
-            pauseboxi2.src = nyarukolive_pluginurl+"lib/baseline-play_arrow-24px.svg";
+            if (pauseboxi) pauseboxi.style.display='block';
+            if (isfullScreen && fsiconbtn) fsiconbtn.style.display='block';
+            if (pauseboxi2) pauseboxi2.src = nyarukolive_pluginurl+"lib/baseline-play_arrow-24px.svg";
         } else {
             console.log("play");
             // pauseboxi.style.display='none';
@@ -116,9 +116,9 @@ function nyarukolive_playpausebtn() {
             } else {
                 player.play();
             }
-            pauseboxi.style.display='none';
-            if (isfullScreen) fsiconbtn.style.display='none';
-            pauseboxi2.src = nyarukolive_pluginurl+"lib/baseline-pause-24px.svg";
+            if (pauseboxi) pauseboxi.style.display='none';
+            if (isfullScreen && fsiconbtn) fsiconbtn.style.display='none';
+            if (pauseboxi2) pauseboxi2.src = nyarukolive_pluginurl+"lib/baseline-pause-24px.svg";
         }
         playing = !playing;
     // } else {
@@ -498,10 +498,11 @@ function requestFullScreen(element) {
     nyarukolivediv.className = "nyarukolivefullpage";
     var nyarukolive_titlebar = document.getElementById('nyarukolive_titlebar');
     var nyarukolive_footbar = document.getElementById('nyarukolive_footbar');
+    document.getElementsByTagName("body")[0].style.overflow = "hidden";
     // if (nyarukolive_videobox.style.height > getClientHeight() - 90) {}
-    nyarukolive_footbar.style.display = "none";
-    nyarukolive_titlebar.style.display = "none";
-    fsiconbtn.style.display = pauseboxi.style.display;
+    if (nyarukolive_footbar) nyarukolive_footbar.style.display = "none";
+    if (nyarukolive_titlebar) nyarukolive_titlebar.style.display = "none";
+    if (fsiconbtn) fsiconbtn.style.display = pauseboxi.style.display;
     if (element.requestFullscreen) {
         element.requestFullscreen();
     } else if (element.mozRequestFullScreen) {
@@ -515,9 +516,10 @@ function exitFullscreen(element) {
     nyarukolivediv.className = "";
     var nyarukolive_titlebar = document.getElementById('nyarukolive_titlebar');
     var nyarukolive_footbar = document.getElementById('nyarukolive_footbar');
-    nyarukolive_footbar.style.display = "table";
-    nyarukolive_titlebar.style.display = "table";
-    fsiconbtn.style.display = "none";
+    document.getElementsByTagName("body")[0].style.overflow = "auto";
+    if (nyarukolive_footbar) nyarukolive_footbar.style.display = "table";
+    if (nyarukolive_titlebar) nyarukolive_titlebar.style.display = "table";
+    if (fsiconbtn) fsiconbtn.style.display = "none";
     if (element.exitFullscreen) {
         element.exitFullscreen();
     } else if (element.mozCancelFullScreen) {
@@ -584,19 +586,26 @@ function wpnyarukoliveinit() {
     } else {
         nyarukolive_error(nyarukolive_lconf);
     }
+    if (getgetval("fullscreen") == "1") requestFullScreen(nyarukolivediv);
     console.log("[wpNyarukoLive] Loading Video ...OK");
     removeWpNyarukoNPlayer();
 }
 nyarukolive_lconf = nyarukolive_loadconfig(nyarukolive_config);
-if (typeof(yashitheme) != "undefined" && yashitheme == "wpnyarukof" && nyarukolive_playermode == 3) {
-    if (wpnyarukolive_ready) {
-        wpnyarukolive_ready = false;
-    } else {
-        wpnyarukoliveinit();
-    }
-} else {
+// if (typeof(yashitheme) != "undefined" && yashitheme == "wpnyarukof" && nyarukolive_playermode == 3) {
+//     if (wpnyarukolive_ready) {
+//         wpnyarukolive_ready = false;
+//     } else {
+//         wpnyarukoliveinit();
+//     }
+// } else {
     wpnyarukoliveinit();
-}
+// }
+function getgetval(key) {
+    var keyreg = new RegExp("(^|\\?|&)"+ key +"=([^&]*)(\\s|&|$)", "i");
+    if (keyreg.test(location.href))
+    return unescape(RegExp.$2.replace(/\+/g, " "));
+    return "";
+};
 //弹幕
 Array.prototype.remove = function(val) {
 	var index = this.indexOf(val);

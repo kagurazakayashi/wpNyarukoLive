@@ -43,6 +43,7 @@ function randomstring($length = 16) {
     return $mstr;
 }
 function nyarukoLiveShortcode($attr, $content) {
+    echo "<!-- wpNyarukoLive Start -->";
     $expguestreg = true; //TODO:简化游客信息填写
     //0.AUTO 1FLV 2HLS 3HLS+
     $errcode = [0,"ok"];
@@ -257,7 +258,7 @@ function nyarukoLiveShortcode($attr, $content) {
     } else {
         echo '<div id="nyarukolive_stopalert"><h1>&emsp;</h1><h1>暂时无法观看</h1><h2>'.$errcode[1].'</h2><h2>代码：'.$errcode[0].'</h2></div>';
     }
-    echo '</div><script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'live_script.js"></script>';
+    echo '</div><script type="text/javascript" src="'.NYARUKOLIVE_PLUGIN_URL.'live_script.js"></script><!-- wpNyarukoLive End -->';
 }
 function isban($ip) {
     global $wpdb;
